@@ -20,11 +20,13 @@ namespace Azure.DigitalTwins.Resolver
         }
 
         public Uri RepositoryUri { get; }
+        public ResolverSettings Settings { get; }
         public RepositoryTypeCategory RepositoryType { get; }
 
-        public RepositoryHandler(Uri repositoryUri, ILogger logger = null)
+        public RepositoryHandler(Uri repositoryUri, ILogger logger = null, ResolverSettings settings = null)
         {
             _logger = logger ?? NullLogger.Instance;
+            Settings = settings ?? new ResolverSettings();
             RepositoryUri = repositoryUri;
 
             _logger.LogInformation(StandardStrings.ClientInitWithFetcher(repositoryUri.Scheme));
@@ -60,12 +62,12 @@ namespace Azure.DigitalTwins.Resolver
             return rx.IsMatch(dtmi);
         }
 
-        public async Task<IDictionary<string, string>> ProcessAsync(string dtmi, bool includeDepencies = true)
+        public async Task<IDictionary<string, string>> ProcessAsync(string dtmi)
         {
-            return await this.ProcessAsync(new List<string>() { dtmi }, includeDepencies);
+            return await this.ProcessAsync(new List<string>() { dtmi });
         }
 
-        public async Task<IDictionary<string, string>> ProcessAsync(IEnumerable<string> dtmis, bool includeDependencies = true)
+        public async Task<IDictionary<string, string>> ProcessAsync(IEnumerable<string> dtmis)
         {
             Dictionary<string, string> processedModels = new Dictionary<string, string>();
             Queue<string> toProcessModels = new Queue<string>();
@@ -95,7 +97,7 @@ namespace Azure.DigitalTwins.Resolver
                 string definition = await this.FetchAsync(targetDtmi);
                 ModelQuery.ModelMetadata metadata = new ModelQuery(definition).GetMetadata();
 
-                if (includeDependencies)
+                if (Settings.IncludeDependencies)
                 {
                     IList<string> dependencies = metadata.Dependencies;
 
