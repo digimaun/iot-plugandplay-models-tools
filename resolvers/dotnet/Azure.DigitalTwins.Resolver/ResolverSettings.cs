@@ -4,17 +4,17 @@
     {
         public ResolverSettings()
         {
-            IncludeDependencies = true;
+            CalculateDependencies = true;
             UsePreComputedDependencies = false;
         }
 
-        public ResolverSettings(bool includeDependencies, bool usePreComputedDependencies)
+        public ResolverSettings(bool calculateDependencies, bool usePreComputedDependencies)
         {
-            IncludeDependencies = includeDependencies;
+            CalculateDependencies = calculateDependencies;
             UsePreComputedDependencies = usePreComputedDependencies;
         }
 
-        public bool IncludeDependencies { get; }
+        public bool CalculateDependencies { get; }
         public bool UsePreComputedDependencies { get; }
     }
 }

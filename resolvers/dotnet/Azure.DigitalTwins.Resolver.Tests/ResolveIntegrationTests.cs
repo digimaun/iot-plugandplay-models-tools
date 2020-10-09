@@ -170,5 +170,19 @@ namespace Azure.DigitalTwins.Resolver.Tests
             Assert.True(result.Keys.Count == 1);
             Assert.True(TestHelpers.ParseRootDtmiFromJson(result[dtmiDupe1]) == dtmiDupe1);
         }
+
+        [TestCase("dtmi:com:example:TemperatureController;1")]
+        public async Task ResolveUsesExpanded(string dtmi)
+        {
+            ResolverSettings settings = new ResolverSettings(
+                calculateDependencies: true,
+                usePreComputedDependencies: true);
+
+            ResolverClient localClient = ResolverClient.FromLocalRepository(
+                TestHelpers.GetTestLocalModelRepository(),
+                settings: settings);
+
+            var result = await localClient.ResolveAsync(dtmi);
+        }
     }
 }

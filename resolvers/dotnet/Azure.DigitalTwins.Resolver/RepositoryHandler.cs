@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -34,12 +35,12 @@ namespace Azure.DigitalTwins.Resolver
             if (repositoryUri.Scheme == "file")
             {
                 RepositoryType = RepositoryTypeCategory.LocalUri;
-                _modelFetcher = new LocalModelFetcher();
+                _modelFetcher = new LocalModelFetcher(_logger);
             }
             else
             {
                 RepositoryType = RepositoryTypeCategory.RemoteUri;
-                _modelFetcher = new RemoteModelFetcher();
+                _modelFetcher = new RemoteModelFetcher(_logger);
             }
         }
 
@@ -94,10 +95,22 @@ namespace Azure.DigitalTwins.Resolver
                 }
                 _logger.LogInformation(StandardStrings.ProcessingDtmi(targetDtmi));
 
-                string definition = await this.FetchAsync(targetDtmi);
-                ModelQuery.ModelMetadata metadata = new ModelQuery(definition).GetMetadata();
+                FetchResult result = await this.FetchAsync(targetDtmi);
+                if (result.Expanded)
+                {
+                    Dictionary<string, string> expanded = await new ModelQuery(result.Definition).ListToDictAsync();
+                    foreach (KeyValuePair<string, string> kvp in expanded)
+                    {
+                        if (!processedModels.ContainsKey(kvp.Key))
+                            processedModels.Add(kvp.Key, kvp.Value);
+                    }
 
-                if (Settings.IncludeDependencies)
+                    continue;
+                }
+
+                ModelQuery.ModelMetadata metadata = new ModelQuery(result.Definition).GetMetadata();
+
+                if (Settings.CalculateDependencies)
                 {
                     IList<string> dependencies = metadata.Dependencies;
 
@@ -117,22 +130,21 @@ namespace Azure.DigitalTwins.Resolver
                     throw new ResolverException(targetDtmi, formatErrorMsg, new FormatException(formatErrorMsg));
                 }
 
-                processedModels.Add(targetDtmi, definition);
+                processedModels.Add(targetDtmi, result.Definition);
             }
 
             return processedModels;
         }
 
-        private async Task<string> FetchAsync(string dtmi)
+        private async Task<FetchResult> FetchAsync(string dtmi)
         {
             try
             {
-                return await this._modelFetcher.FetchAsync(dtmi, this.RepositoryUri, this._logger);
+                return await this._modelFetcher.FetchAsync(dtmi, this.RepositoryUri, Settings.UsePreComputedDependencies);
             }
             catch (Exception ex)
             {
-                string fetchErrorMsg = StandardStrings.FailedFetchingContent(this._modelFetcher.GetPath(dtmi, this.RepositoryUri));
-                throw new ResolverException(dtmi, fetchErrorMsg, ex);
+                throw new ResolverException(dtmi, ex.Message, ex);
             }
         }
     }
