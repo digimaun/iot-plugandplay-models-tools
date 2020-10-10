@@ -37,7 +37,8 @@ namespace Azure.DigitalTwins.Resolver.Tests
             // Resolution correctness is covered in ResolverIntegrationTests
             FetchResult fetchResult = await _localFetcher.FetchAsync(targetDtmi, _localUri);
             Assert.IsNotNull(fetchResult.Definition);
- 
+            Assert.IsNotNull(fetchResult.Path);
+
             _logger.ValidateLog(StandardStrings.FetchingContent(fetcherPath), LogLevel.Information, Times.Once());
         }
 
@@ -74,6 +75,7 @@ namespace Azure.DigitalTwins.Resolver.Tests
             // Resolution correctness is covered in ResolverIntegrationTests
             FetchResult fetchResult = await _remoteFetcher.FetchAsync(targetDtmi, _remoteUri);
             Assert.IsNotNull(fetchResult.Definition);
+            Assert.IsNotNull(fetchResult.Path);
 
             _logger.ValidateLog($"{StandardStrings.FetchingContent(fetcherPath)}", LogLevel.Information, Times.Once());
         }

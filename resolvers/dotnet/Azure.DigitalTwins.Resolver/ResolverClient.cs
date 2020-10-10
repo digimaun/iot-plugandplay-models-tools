@@ -10,18 +10,18 @@ namespace Azure.DigitalTwins.Resolver
     {
         readonly RepositoryHandler repositoryHandler = null;
 
-        public static ResolverClient FromRemoteRepository(string repositoryUri, ILogger logger = null, ResolverSettings settings = null)
+        public static ResolverClient FromRemoteRepository(string repositoryUri, ILogger logger = null, ResolutionSettings settings = null)
         {
             return new ResolverClient(new Uri(repositoryUri), logger, settings);
         }
 
-        public static ResolverClient FromLocalRepository(string repositoryPath, ILogger logger = null, ResolverSettings settings = null)
+        public static ResolverClient FromLocalRepository(string repositoryPath, ILogger logger = null, ResolutionSettings settings = null)
         {
             repositoryPath = Path.GetFullPath(repositoryPath);
             return new ResolverClient(new Uri($"file://{repositoryPath}"), logger, settings);
         }
 
-        public ResolverClient(Uri repositoryUri, ILogger logger = null, ResolverSettings settings = null)
+        public ResolverClient(Uri repositoryUri, ILogger logger = null, ResolutionSettings settings = null)
         {
             this.repositoryHandler = new RepositoryHandler(repositoryUri, logger, settings);
         }
@@ -53,6 +53,6 @@ namespace Azure.DigitalTwins.Resolver
 
         public Uri RepositoryUri { get { return this.repositoryHandler.RepositoryUri; } }
 
-        public ResolverSettings Settings { get { return this.repositoryHandler.Settings; } }
+        public ResolutionSettings Settings { get { return this.repositoryHandler.Settings; } }
     }
 }

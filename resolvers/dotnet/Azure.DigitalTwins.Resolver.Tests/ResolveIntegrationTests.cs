@@ -3,8 +3,9 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using System.Net;
 using System.Threading.Tasks;
+using static Azure.DigitalTwins.Resolver.RepositoryHandler;
 
 namespace Azure.DigitalTwins.Resolver.Tests
 {
@@ -171,10 +172,63 @@ namespace Azure.DigitalTwins.Resolver.Tests
             Assert.True(TestHelpers.ParseRootDtmiFromJson(result[dtmiDupe1]) == dtmiDupe1);
         }
 
-        [TestCase("dtmi:com:example:TemperatureController;1")]
-        public async Task ResolveUsesExpanded(string dtmi)
+        [TestCase(
+            "dtmi:com:example:TemperatureController;1", // Expanded available locally.
+            "dtmi:com:example:Thermostat;1,dtmi:azure:DeviceManagement:DeviceInformation;1",
+            RepositoryTypeCategory.LocalUri)]
+        [TestCase(
+            "dtmi:com:example:TemperatureController;1", // Expanded available remotely.
+            "dtmi:com:example:Thermostat;1,dtmi:azure:DeviceManagement:DeviceInformation;1",
+            RepositoryTypeCategory.RemoteUri)]
+        public async Task ResolveUseExpanded(string dtmi, string expectedDeps, RepositoryTypeCategory clientType)
         {
-            ResolverSettings settings = new ResolverSettings(
+            Mock<ILogger> _logger = new Mock<ILogger>();
+            var expectedDtmis = $"{dtmi},{expectedDeps}".Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+            ResolutionSettings settings = new ResolutionSettings(
+                calculateDependencies: true,
+                usePreComputedDependencies: true);
+
+            ResolverClient client = null;
+            if (clientType == RepositoryTypeCategory.LocalUri)
+                client = ResolverClient.FromLocalRepository(
+                    TestHelpers.GetTestLocalModelRepository(),
+                    settings: settings,
+                    logger: _logger.Object);
+
+            if (clientType == RepositoryTypeCategory.RemoteUri)
+                client = ResolverClient.FromRemoteRepository(
+                    TestHelpers.GetTestRemoteModelRepository(),
+                    settings: settings,
+                    logger: _logger.Object);
+
+            var result = await client.ResolveAsync(dtmi);
+
+            Assert.True(result.Keys.Count == expectedDtmis.Length);
+            foreach (var id in expectedDtmis)
+            {
+                Assert.True(result.ContainsKey(id));
+                Assert.True(TestHelpers.ParseRootDtmiFromJson(result[id]) == id);
+            }
+
+            string expectedPath = DtmiConventions.ToPath(
+                dtmi, 
+                clientType == RepositoryTypeCategory.LocalUri ? client.RepositoryUri.AbsolutePath : client.RepositoryUri.AbsoluteUri,
+                expanded: true);
+            _logger.ValidateLog(StandardStrings.FetchingContent(expectedPath), LogLevel.Information, Times.Once());
+        }
+
+        [TestCase("dtmi:com:example:TemperatureController;1", // Expanded available.
+                  "dtmi:com:example:ColdStorage;1", // Model uses extends[], No expanded.json available.
+                  "dtmi:com:example:Thermostat;1," +
+                  "dtmi:azure:DeviceManagement:DeviceInformation;1," +
+                  "dtmi:com:example:Room;1," +
+                  "dtmi:com:example:Freezer;1")]
+        public async Task ResolvePartialUseExpandedMultipleDtmi(string dtmi1, string dtmi2, string expectedDeps)
+        {
+            var expectedDtmis = $"{dtmi1},{dtmi2},{expectedDeps}".Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+            ResolutionSettings settings = new ResolutionSettings(
                 calculateDependencies: true,
                 usePreComputedDependencies: true);
 
@@ -182,7 +236,17 @@ namespace Azure.DigitalTwins.Resolver.Tests
                 TestHelpers.GetTestLocalModelRepository(),
                 settings: settings);
 
-            var result = await localClient.ResolveAsync(dtmi);
+            var result = await localClient.ResolveAsync(dtmi1, dtmi2);
+
+            Assert.True(result.Keys.Count == expectedDtmis.Length);
+            foreach (var id in expectedDtmis)
+            {
+                Assert.True(result.ContainsKey(id));
+                Assert.True(TestHelpers.ParseRootDtmiFromJson(result[id]) == id);
+            }
+
+            //string expectedPath = DtmiConventions.ToPath(dtmi, localClient.RepositoryUri.AbsolutePath, expanded: true);
+            //_logger.ValidateLog(StandardStrings.FetchingContent(expectedPath), LogLevel.Information, Times.Once());
         }
     }
 }

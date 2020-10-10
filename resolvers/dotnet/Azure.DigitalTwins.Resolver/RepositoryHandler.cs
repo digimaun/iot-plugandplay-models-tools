@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -21,13 +20,13 @@ namespace Azure.DigitalTwins.Resolver
         }
 
         public Uri RepositoryUri { get; }
-        public ResolverSettings Settings { get; }
+        public ResolutionSettings Settings { get; }
         public RepositoryTypeCategory RepositoryType { get; }
 
-        public RepositoryHandler(Uri repositoryUri, ILogger logger = null, ResolverSettings settings = null)
+        public RepositoryHandler(Uri repositoryUri, ILogger logger = null, ResolutionSettings settings = null)
         {
             _logger = logger ?? NullLogger.Instance;
-            Settings = settings ?? new ResolverSettings();
+            Settings = settings ?? new ResolutionSettings();
             RepositoryUri = repositoryUri;
 
             _logger.LogInformation(StandardStrings.ClientInitWithFetcher(repositoryUri.Scheme));
@@ -140,7 +139,7 @@ namespace Azure.DigitalTwins.Resolver
         {
             try
             {
-                return await this._modelFetcher.FetchAsync(dtmi, this.RepositoryUri, Settings.UsePreComputedDependencies);
+                return await this._modelFetcher.FetchAsync(dtmi, this.RepositoryUri, Settings.UsePreCalculatedDependencies);
             }
             catch (Exception ex)
             {
