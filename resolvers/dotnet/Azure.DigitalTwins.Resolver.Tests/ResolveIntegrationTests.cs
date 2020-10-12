@@ -3,7 +3,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Net;
+using System.Linq;
 using System.Threading.Tasks;
 using static Azure.DigitalTwins.Resolver.RepositoryHandler;
 
@@ -218,15 +218,18 @@ namespace Azure.DigitalTwins.Resolver.Tests
             _logger.ValidateLog(StandardStrings.FetchingContent(expectedPath), LogLevel.Information, Times.Once());
         }
 
-        [TestCase("dtmi:com:example:TemperatureController;1", // Expanded available.
-                  "dtmi:com:example:ColdStorage;1", // Model uses extends[], No expanded.json available.
+        [TestCase("dtmi:com:example:TemperatureController;1," +  // Expanded available.
                   "dtmi:com:example:Thermostat;1," +
-                  "dtmi:azure:DeviceManagement:DeviceInformation;1," +
+                  "dtmi:azure:DeviceManagement:DeviceInformation;1",
+                  "dtmi:com:example:ColdStorage;1," + // Model uses extends[], No Expanded available.
                   "dtmi:com:example:Room;1," +
                   "dtmi:com:example:Freezer;1")]
-        public async Task ResolvePartialUseExpandedMultipleDtmi(string dtmi1, string dtmi2, string expectedDeps)
+        public async Task ResolveUseExpandedPartialMultipleDtmi(string dtmisExpanded, string dtmisNonExpanded)
         {
-            var expectedDtmis = $"{dtmi1},{dtmi2},{expectedDeps}".Split(',', StringSplitOptions.RemoveEmptyEntries);
+            Mock<ILogger> _logger = new Mock<ILogger>();
+            string[] expandedDtmis = dtmisExpanded.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            string[] nonExpandedDtmis = dtmisNonExpanded.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            string[] totalDtmis = expandedDtmis.Concat(nonExpandedDtmis).ToArray();
 
             ResolutionSettings settings = new ResolutionSettings(
                 calculateDependencies: true,
@@ -234,19 +237,28 @@ namespace Azure.DigitalTwins.Resolver.Tests
 
             ResolverClient localClient = ResolverClient.FromLocalRepository(
                 TestHelpers.GetTestLocalModelRepository(),
-                settings: settings);
+                settings: settings,
+                logger: _logger.Object);
 
-            var result = await localClient.ResolveAsync(dtmi1, dtmi2);
+            // Multi-resolve dtmi:com:example:TemperatureController;1 + dtmi:com:example:ColdStorage;1
+            var result = await localClient.ResolveAsync(expandedDtmis[0], nonExpandedDtmis[0]);
 
-            Assert.True(result.Keys.Count == expectedDtmis.Length);
-            foreach (var id in expectedDtmis)
+            Assert.True(result.Keys.Count == totalDtmis.Length);
+            foreach (string id in totalDtmis)
             {
                 Assert.True(result.ContainsKey(id));
                 Assert.True(TestHelpers.ParseRootDtmiFromJson(result[id]) == id);
             }
 
-            //string expectedPath = DtmiConventions.ToPath(dtmi, localClient.RepositoryUri.AbsolutePath, expanded: true);
-            //_logger.ValidateLog(StandardStrings.FetchingContent(expectedPath), LogLevel.Information, Times.Once());
+            string expandedModelPath = DtmiConventions.ToPath(expandedDtmis[0], localClient.RepositoryUri.AbsolutePath, expanded: true);
+            _logger.ValidateLog(StandardStrings.FetchingContent(expandedModelPath), LogLevel.Information, Times.Once());
+
+            foreach (string dtmi in nonExpandedDtmis)
+            {
+                string expectedPath = DtmiConventions.ToPath(dtmi, localClient.RepositoryUri.AbsolutePath, expanded: true);
+                _logger.ValidateLog(StandardStrings.FetchingContent(expectedPath), LogLevel.Information, Times.Once());
+                _logger.ValidateLog(StandardStrings.ErrorAccessLocalRepositoryModel(expectedPath), LogLevel.Warning, Times.Once());
+            }
         }
     }
 }

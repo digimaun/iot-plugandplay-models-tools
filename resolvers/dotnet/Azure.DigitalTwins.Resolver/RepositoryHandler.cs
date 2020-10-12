@@ -95,7 +95,7 @@ namespace Azure.DigitalTwins.Resolver
                 _logger.LogInformation(StandardStrings.ProcessingDtmi(targetDtmi));
 
                 FetchResult result = await this.FetchAsync(targetDtmi);
-                if (result.Expanded)
+                if (result.PreCalculated)
                 {
                     Dictionary<string, string> expanded = await new ModelQuery(result.Definition).ListToDictAsync();
                     foreach (KeyValuePair<string, string> kvp in expanded)
