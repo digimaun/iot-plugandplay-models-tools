@@ -1,4 +1,3 @@
-using Castle.Core.Internal;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
@@ -24,7 +23,7 @@ namespace Azure.DigitalTwins.Resolver.Tests
             Uri registryUri = new Uri(registryUriString);
 
             // Uses NullLogger
-            var client = new ResolverClient(registryUri);
+            ResolverClient client = new ResolverClient(registryUri);
             Assert.AreEqual(registryUri, client.RepositoryUri);
 
             client = new ResolverClient(registryUri, _logger.Object);
@@ -38,7 +37,7 @@ namespace Azure.DigitalTwins.Resolver.Tests
             string registryUriString = "https://localhost/myregistry/";
             Uri registryUri = new Uri(registryUriString);
 
-            var client = ResolverClient.FromRemoteRepository(registryUriString);
+            ResolverClient client = ResolverClient.FromRemoteRepository(registryUriString);
             Assert.AreEqual(registryUri, client.RepositoryUri);
 
             client = ResolverClient.FromRemoteRepository(registryUriString, _logger.Object);
@@ -53,7 +52,7 @@ namespace Azure.DigitalTwins.Resolver.Tests
             Uri registryUri = new Uri($"file://{testModelRegistryPath}");
 
             // Uses NullLogger
-            var client = ResolverClient.FromLocalRepository(testModelRegistryPath);
+            ResolverClient client = ResolverClient.FromLocalRepository(testModelRegistryPath);
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
@@ -84,7 +83,7 @@ namespace Azure.DigitalTwins.Resolver.Tests
         public void ClientLocalRepoGetPath(string dtmi, string expectedPath)
         {
             string testModelRegistryPath = TestHelpers.GetTestLocalModelRepository();
-            var client = ResolverClient.FromLocalRepository(testModelRegistryPath);
+            ResolverClient client = ResolverClient.FromLocalRepository(testModelRegistryPath);
 
             if (string.IsNullOrEmpty(expectedPath))
             {
@@ -108,7 +107,7 @@ namespace Azure.DigitalTwins.Resolver.Tests
         public void ClientRemoteRepoGetPath(string dtmi, string expectedPath)
         {
             string registryUriString = "https://localhost/myregistry";
-            var client = ResolverClient.FromRemoteRepository(registryUriString);
+            ResolverClient client = ResolverClient.FromRemoteRepository(registryUriString);
 
             if (string.IsNullOrEmpty(expectedPath))
             {
@@ -124,20 +123,18 @@ namespace Azure.DigitalTwins.Resolver.Tests
         [Test]
         public void ClientSettings()
         {
-            ResolutionSettings defaultSettings = new ResolutionSettings();
-            ResolutionSettings customSettings = 
-                new ResolutionSettings(usePreComputedDependencies: true, calculateDependencies: false);
+            ResolutionSettingOption defaultResolutionSetting = ResolutionSettingOption.FetchDependencies;
+            ResolverClientSettings customSettings = 
+                new ResolverClientSettings(ResolutionSettingOption.FetchDependenciesFromExpanded);
 
             string registryUriString = "https://localhost/myregistry/";
             Uri registryUri = new Uri(registryUriString);
 
-            var defaultClient = new ResolverClient(registryUri);
-            Assert.AreEqual(defaultClient.Settings.CalculateDependencies, defaultSettings.CalculateDependencies);
-            Assert.AreEqual(defaultClient.Settings.UsePreCalculatedDependencies, defaultSettings.UsePreCalculatedDependencies);
+            ResolverClient defaultClient = new ResolverClient(registryUri);
+            Assert.AreEqual(defaultClient.Settings.ResolutionSetting, defaultResolutionSetting);
 
-            var customClient = new ResolverClient(registryUri, settings: customSettings);
-            Assert.AreEqual(customClient.Settings.CalculateDependencies, customSettings.CalculateDependencies);
-            Assert.AreEqual(customClient.Settings.UsePreCalculatedDependencies, customSettings.UsePreCalculatedDependencies);
+            ResolverClient customClient = new ResolverClient(registryUri, settings: customSettings);
+            Assert.AreEqual(customClient.Settings.ResolutionSetting, ResolutionSettingOption.FetchDependenciesFromExpanded);
         }
     }
 }

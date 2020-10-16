@@ -42,7 +42,7 @@ namespace Azure.DigitalTwins.Resolver.Tests
             FetchResult fetchResult = await _localFetcher.FetchAsync(targetDtmi, _localUri, fetchExpanded);
             Assert.True(!string.IsNullOrEmpty(fetchResult.Definition));
             Assert.True(!string.IsNullOrEmpty(fetchResult.Path));
-            Assert.AreEqual(fetchResult.PreCalculated, fetchExpanded);
+            Assert.AreEqual(fetchResult.FromExpanded, fetchExpanded);
 
             _logger.ValidateLog(StandardStrings.FetchingContent(fetcherPath), LogLevel.Information, Times.Once());
         }
@@ -82,7 +82,7 @@ namespace Azure.DigitalTwins.Resolver.Tests
             FetchResult fetchResult = await _remoteFetcher.FetchAsync(targetDtmi, _remoteUri);
             Assert.True(!string.IsNullOrEmpty(fetchResult.Definition));
             Assert.True(!string.IsNullOrEmpty(fetchResult.Path));
-            Assert.AreEqual(fetchResult.PreCalculated, fetchExpanded);
+            Assert.AreEqual(fetchResult.FromExpanded, fetchExpanded);
 
             _logger.ValidateLog($"{StandardStrings.FetchingContent(fetcherPath)}", LogLevel.Information, Times.Once());
         }

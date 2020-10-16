@@ -6,7 +6,7 @@ namespace Azure.DigitalTwins.Resolver.CLI
 {
     class CommonOptions
     {
-        private const string _defaultRepository = "https://devicemodeltest.azureedge.net/";
+        private const string _defaultRepository = "https://devicemodels.azure.com/";
 
         public static Option<string> Dtmi
         {
@@ -14,7 +14,7 @@ namespace Azure.DigitalTwins.Resolver.CLI
             {
                 return new Option<string>(
                 "--dtmi",
-                description: "Digital Twin Model Identifier. Example: dtmi:com:example:Thermostat;1")
+                description: "Digital Twin Model Identifier. Example: 'dtmi:com:example:Thermostat;1'")
                 {
                     Argument = new Argument<string>
                     {

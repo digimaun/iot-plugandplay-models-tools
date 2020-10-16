@@ -185,9 +185,7 @@ namespace Azure.DigitalTwins.Resolver.Tests
             Mock<ILogger> _logger = new Mock<ILogger>();
             var expectedDtmis = $"{dtmi},{expectedDeps}".Split(',', StringSplitOptions.RemoveEmptyEntries);
 
-            ResolutionSettings settings = new ResolutionSettings(
-                calculateDependencies: true,
-                usePreComputedDependencies: true);
+            ResolverClientSettings settings = new ResolverClientSettings(ResolutionSettingOption.FetchDependenciesFromExpanded);
 
             ResolverClient client = null;
             if (clientType == RepositoryTypeCategory.LocalUri)
@@ -231,9 +229,7 @@ namespace Azure.DigitalTwins.Resolver.Tests
             string[] nonExpandedDtmis = dtmisNonExpanded.Split(',', StringSplitOptions.RemoveEmptyEntries);
             string[] totalDtmis = expandedDtmis.Concat(nonExpandedDtmis).ToArray();
 
-            ResolutionSettings settings = new ResolutionSettings(
-                calculateDependencies: true,
-                usePreComputedDependencies: true);
+            ResolverClientSettings settings = new ResolverClientSettings(ResolutionSettingOption.FetchDependenciesFromExpanded);
 
             ResolverClient localClient = ResolverClient.FromLocalRepository(
                 TestHelpers.GetTestLocalModelRepository(),
