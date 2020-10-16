@@ -109,7 +109,7 @@ namespace Azure.DigitalTwins.Resolver
 
                 ModelMetadata metadata = new ModelQuery(result.Definition).GetMetadata();
 
-                if (Settings.ResolutionSetting >= ResolutionSettingOption.FetchDependencies)
+                if (Settings.DependencyResolution >= DependencyResolutionOption.Enabled)
                 {
                     IList<string> dependencies = metadata.Dependencies;
 
@@ -141,7 +141,7 @@ namespace Azure.DigitalTwins.Resolver
             {
                 return await this._modelFetcher.FetchAsync(
                     dtmi, this.RepositoryUri,
-                    Settings.ResolutionSetting == ResolutionSettingOption.FetchDependenciesFromExpanded);
+                    Settings.DependencyResolution == DependencyResolutionOption.FromExpanded);
             }
             catch (Exception ex)
             {

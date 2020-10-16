@@ -38,7 +38,7 @@ namespace Azure.DigitalTwins.Resolver.Tests
         {
             string expectedExMsg =
                 $"{StandardStrings.GenericResolverError("dtmi:com:example:thermostat;1")}" +
-                $"{StandardStrings.IncorrectDtmiCasing("dtmi:com:example:thermostat;1","dtmi:com:example:Thermostat;1")}";
+                $"{StandardStrings.IncorrectDtmiCasing("dtmi:com:example:thermostat;1", "dtmi:com:example:Thermostat;1")}";
 
             ResolverException re = Assert.ThrowsAsync<ResolverException>(async () => await _localClient.ResolveAsync(dtmi));
             Assert.AreEqual(re.Message, expectedExMsg);
@@ -77,18 +77,18 @@ namespace Azure.DigitalTwins.Resolver.Tests
             Assert.True(TestHelpers.ParseRootDtmiFromJson(result[dtmi2]) == dtmi2);
         }
 
-        [TestCase("dtmi:com:example:TemperatureController;1", 
+        [TestCase("dtmi:com:example:TemperatureController;1",
                   "dtmi:com:example:Thermostat;1,dtmi:azure:DeviceManagement:DeviceInformation;1")]
         public async Task ResolveSingleModelWithDepsAndLogger(string dtmi, string expectedDeps)
         {
             Mock<ILogger> _logger = new Mock<ILogger>();
             ResolverClient localClient = ResolverClient.FromLocalRepository(TestHelpers.GetTestLocalModelRepository(), _logger.Object);
-           
+
             var result = await localClient.ResolveAsync(dtmi);
             var expectedDtmis = $"{dtmi},{expectedDeps}".Split(',', StringSplitOptions.RemoveEmptyEntries);
 
             Assert.True(result.Keys.Count == expectedDtmis.Length);
-            foreach(var id in expectedDtmis)
+            foreach (var id in expectedDtmis)
             {
                 Assert.True(result.ContainsKey(id));
                 Assert.True(TestHelpers.ParseRootDtmiFromJson(result[id]) == id);
@@ -97,7 +97,7 @@ namespace Azure.DigitalTwins.Resolver.Tests
             // Verifying log entries for a Process(...) run
 
             _logger.ValidateLog($"{StandardStrings.ClientInitWithFetcher(localClient.RepositoryUri.Scheme)}", LogLevel.Information, Times.Once());
-            
+
             _logger.ValidateLog($"{StandardStrings.ProcessingDtmi("dtmi:com:example:TemperatureController;1")}", LogLevel.Information, Times.Once());
             _logger.ValidateLog($"{StandardStrings.FetchingContent(DtmiConventions.ToPath(expectedDtmis[0], localClient.RepositoryUri.AbsolutePath))}", LogLevel.Information, Times.Once());
 
@@ -132,7 +132,7 @@ namespace Azure.DigitalTwins.Resolver.Tests
         [TestCase("dtmi:com:example:TemperatureController;1",
                   "dtmi:com:example:ConferenceRoom;1", // Model uses extends
                   "dtmi:com:example:Thermostat;1,dtmi:azure:DeviceManagement:DeviceInformation;1,dtmi:com:example:Room;1")]
-        public async Task ResolveMultipleModelsWithDepsExpand(string dtmi1, string dtmi2, string expectedDeps)
+        public async Task ResolveMultipleModelsWithDepsFromExtends(string dtmi1, string dtmi2, string expectedDeps)
         {
             var result = await _localClient.ResolveAsync(dtmi1, dtmi2); // Uses ResolveAsync(params string[])
             var expectedDtmis = $"{dtmi1},{dtmi2},{expectedDeps}".Split(',', StringSplitOptions.RemoveEmptyEntries);
@@ -151,7 +151,7 @@ namespace Azure.DigitalTwins.Resolver.Tests
                   "dtmi:azure:DeviceManagement:DeviceInformation;1," +
                   "dtmi:com:example:Room;1," +
                   "dtmi:com:example:Freezer;1")]
-        public async Task ResolveMultipleModelsWithDepsExpandVariant(string dtmi1, string dtmi2, string expectedDeps)
+        public async Task ResolveMultipleModelsWithDepsFromExtendsVarient(string dtmi1, string dtmi2, string expectedDeps)
         {
             var result = await _localClient.ResolveAsync(dtmi1, dtmi2); // Uses ResolveAsync(params string[])
             var expectedDtmis = $"{dtmi1},{dtmi2},{expectedDeps}".Split(',', StringSplitOptions.RemoveEmptyEntries);
@@ -172,6 +172,20 @@ namespace Azure.DigitalTwins.Resolver.Tests
             Assert.True(TestHelpers.ParseRootDtmiFromJson(result[dtmiDupe1]) == dtmiDupe1);
         }
 
+        [TestCase("dtmi:com:example:TemperatureController;1")]
+        public async Task ResolveSingleModelWithDepsDisableDependencyResolution(string dtmi)
+        {
+            ResolverClientSettings settings = new ResolverClientSettings(DependencyResolutionOption.Disabled);
+            ResolverClient localClient = ResolverClient.FromLocalRepository(
+                TestHelpers.GetTestLocalModelRepository(), settings: settings);
+
+            var result = await localClient.ResolveAsync(dtmi);
+
+            Assert.True(result.Keys.Count == 1);
+            Assert.True(result.ContainsKey(dtmi));
+            Assert.True(TestHelpers.ParseRootDtmiFromJson(result[dtmi]) == dtmi);
+        }
+
         [TestCase(
             "dtmi:com:example:TemperatureController;1", // Expanded available locally.
             "dtmi:com:example:Thermostat;1,dtmi:azure:DeviceManagement:DeviceInformation;1",
@@ -185,7 +199,7 @@ namespace Azure.DigitalTwins.Resolver.Tests
             Mock<ILogger> _logger = new Mock<ILogger>();
             var expectedDtmis = $"{dtmi},{expectedDeps}".Split(',', StringSplitOptions.RemoveEmptyEntries);
 
-            ResolverClientSettings settings = new ResolverClientSettings(ResolutionSettingOption.FetchDependenciesFromExpanded);
+            ResolverClientSettings settings = new ResolverClientSettings(DependencyResolutionOption.FromExpanded);
 
             ResolverClient client = null;
             if (clientType == RepositoryTypeCategory.LocalUri)
@@ -229,7 +243,7 @@ namespace Azure.DigitalTwins.Resolver.Tests
             string[] nonExpandedDtmis = dtmisNonExpanded.Split(',', StringSplitOptions.RemoveEmptyEntries);
             string[] totalDtmis = expandedDtmis.Concat(nonExpandedDtmis).ToArray();
 
-            ResolverClientSettings settings = new ResolverClientSettings(ResolutionSettingOption.FetchDependenciesFromExpanded);
+            ResolverClientSettings settings = new ResolverClientSettings(DependencyResolutionOption.FromExpanded);
 
             ResolverClient localClient = ResolverClient.FromLocalRepository(
                 TestHelpers.GetTestLocalModelRepository(),

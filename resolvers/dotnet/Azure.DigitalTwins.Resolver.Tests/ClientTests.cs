@@ -123,18 +123,18 @@ namespace Azure.DigitalTwins.Resolver.Tests
         [Test]
         public void ClientSettings()
         {
-            ResolutionSettingOption defaultResolutionSetting = ResolutionSettingOption.FetchDependencies;
+            DependencyResolutionOption defaultResolutionOption = DependencyResolutionOption.Enabled;
             ResolverClientSettings customSettings = 
-                new ResolverClientSettings(ResolutionSettingOption.FetchDependenciesFromExpanded);
+                new ResolverClientSettings(DependencyResolutionOption.FromExpanded);
 
             string registryUriString = "https://localhost/myregistry/";
             Uri registryUri = new Uri(registryUriString);
 
             ResolverClient defaultClient = new ResolverClient(registryUri);
-            Assert.AreEqual(defaultClient.Settings.ResolutionSetting, defaultResolutionSetting);
+            Assert.AreEqual(defaultClient.Settings.DependencyResolution, defaultResolutionOption);
 
             ResolverClient customClient = new ResolverClient(registryUri, settings: customSettings);
-            Assert.AreEqual(customClient.Settings.ResolutionSetting, ResolutionSettingOption.FetchDependenciesFromExpanded);
+            Assert.AreEqual(customClient.Settings.DependencyResolution, DependencyResolutionOption.FromExpanded);
         }
     }
 }

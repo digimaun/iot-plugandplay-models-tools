@@ -4,21 +4,21 @@
     {
         public ResolverClientSettings()
         {
-            ResolutionSetting = ResolutionSettingOption.FetchDependencies;
+            DependencyResolution = DependencyResolutionOption.Enabled;
         }
 
-        public ResolverClientSettings(ResolutionSettingOption resolutionSetting)
+        public ResolverClientSettings(DependencyResolutionOption resolutionOption)
         {
-            ResolutionSetting = resolutionSetting;
+            DependencyResolution = resolutionOption;
         }
 
-        public ResolutionSettingOption ResolutionSetting { get; }
+        public DependencyResolutionOption DependencyResolution { get; }
     }
 
-    public enum ResolutionSettingOption
+    public enum DependencyResolutionOption
     {
-        DisableFetchDependencies,
-        FetchDependencies,
-        FetchDependenciesFromExpanded
+        Disabled,
+        Enabled,
+        FromExpanded
     }
 }
