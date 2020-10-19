@@ -96,18 +96,18 @@ namespace Azure.DigitalTwins.Resolver.Tests
 
             // Verifying log entries for a Process(...) run
 
-            _logger.ValidateLog($"{StandardStrings.ClientInitWithFetcher(localClient.RepositoryUri.Scheme)}", LogLevel.Information, Times.Once());
+            _logger.ValidateLog($"{StandardStrings.ClientInitWithFetcher(localClient.RepositoryUri.Scheme)}", LogLevel.Trace, Times.Once());
 
-            _logger.ValidateLog($"{StandardStrings.ProcessingDtmi("dtmi:com:example:TemperatureController;1")}", LogLevel.Information, Times.Once());
-            _logger.ValidateLog($"{StandardStrings.FetchingContent(DtmiConventions.ToPath(expectedDtmis[0], localClient.RepositoryUri.AbsolutePath))}", LogLevel.Information, Times.Once());
+            _logger.ValidateLog($"{StandardStrings.ProcessingDtmi("dtmi:com:example:TemperatureController;1")}", LogLevel.Trace, Times.Once());
+            _logger.ValidateLog($"{StandardStrings.FetchingContent(DtmiConventions.ToPath(expectedDtmis[0], localClient.RepositoryUri.AbsolutePath))}", LogLevel.Trace, Times.Once());
 
-            _logger.ValidateLog($"{StandardStrings.DiscoveredDependencies(new List<string>() { "dtmi:com:example:Thermostat;1", "dtmi:azure:DeviceManagement:DeviceInformation;1" })}", LogLevel.Information, Times.Once());
+            _logger.ValidateLog($"{StandardStrings.DiscoveredDependencies(new List<string>() { "dtmi:com:example:Thermostat;1", "dtmi:azure:DeviceManagement:DeviceInformation;1" })}", LogLevel.Trace, Times.Once());
 
-            _logger.ValidateLog($"{StandardStrings.ProcessingDtmi("dtmi:com:example:Thermostat;1")}", LogLevel.Information, Times.Once());
-            _logger.ValidateLog($"{StandardStrings.FetchingContent(DtmiConventions.ToPath(expectedDtmis[1], localClient.RepositoryUri.AbsolutePath))}", LogLevel.Information, Times.Once());
+            _logger.ValidateLog($"{StandardStrings.ProcessingDtmi("dtmi:com:example:Thermostat;1")}", LogLevel.Trace, Times.Once());
+            _logger.ValidateLog($"{StandardStrings.FetchingContent(DtmiConventions.ToPath(expectedDtmis[1], localClient.RepositoryUri.AbsolutePath))}", LogLevel.Trace, Times.Once());
 
-            _logger.ValidateLog($"{StandardStrings.ProcessingDtmi("dtmi:azure:DeviceManagement:DeviceInformation;1")}", LogLevel.Information, Times.Once());
-            _logger.ValidateLog($"{StandardStrings.FetchingContent(DtmiConventions.ToPath(expectedDtmis[2], localClient.RepositoryUri.AbsolutePath))}", LogLevel.Information, Times.Once());
+            _logger.ValidateLog($"{StandardStrings.ProcessingDtmi("dtmi:azure:DeviceManagement:DeviceInformation;1")}", LogLevel.Trace, Times.Once());
+            _logger.ValidateLog($"{StandardStrings.FetchingContent(DtmiConventions.ToPath(expectedDtmis[2], localClient.RepositoryUri.AbsolutePath))}", LogLevel.Trace, Times.Once());
         }
 
         [TestCase("dtmi:com:example:Phone;2",
@@ -226,8 +226,8 @@ namespace Azure.DigitalTwins.Resolver.Tests
             string expectedPath = DtmiConventions.ToPath(
                 dtmi, 
                 clientType == RepositoryTypeCategory.LocalUri ? client.RepositoryUri.AbsolutePath : client.RepositoryUri.AbsoluteUri,
-                expanded: true);
-            _logger.ValidateLog(StandardStrings.FetchingContent(expectedPath), LogLevel.Information, Times.Once());
+                fromExpanded: true);
+            _logger.ValidateLog(StandardStrings.FetchingContent(expectedPath), LogLevel.Trace, Times.Once());
         }
 
         [TestCase("dtmi:com:example:TemperatureController;1," +  // Expanded available.
@@ -260,13 +260,13 @@ namespace Azure.DigitalTwins.Resolver.Tests
                 Assert.True(TestHelpers.ParseRootDtmiFromJson(result[id]) == id);
             }
 
-            string expandedModelPath = DtmiConventions.ToPath(expandedDtmis[0], localClient.RepositoryUri.AbsolutePath, expanded: true);
-            _logger.ValidateLog(StandardStrings.FetchingContent(expandedModelPath), LogLevel.Information, Times.Once());
+            string expandedModelPath = DtmiConventions.ToPath(expandedDtmis[0], localClient.RepositoryUri.AbsolutePath, fromExpanded: true);
+            _logger.ValidateLog(StandardStrings.FetchingContent(expandedModelPath), LogLevel.Trace, Times.Once());
 
             foreach (string dtmi in nonExpandedDtmis)
             {
-                string expectedPath = DtmiConventions.ToPath(dtmi, localClient.RepositoryUri.AbsolutePath, expanded: true);
-                _logger.ValidateLog(StandardStrings.FetchingContent(expectedPath), LogLevel.Information, Times.Once());
+                string expectedPath = DtmiConventions.ToPath(dtmi, localClient.RepositoryUri.AbsolutePath, fromExpanded: true);
+                _logger.ValidateLog(StandardStrings.FetchingContent(expectedPath), LogLevel.Trace, Times.Once());
                 _logger.ValidateLog(StandardStrings.ErrorAccessLocalRepositoryModel(expectedPath), LogLevel.Warning, Times.Once());
             }
         }

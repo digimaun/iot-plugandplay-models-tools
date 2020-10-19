@@ -28,7 +28,7 @@ namespace Azure.DigitalTwins.Resolver.Tests
 
             client = new ResolverClient(registryUri, _logger.Object);
             Assert.AreEqual(registryUri, client.RepositoryUri);
-            _logger.ValidateLog(StandardStrings.ClientInitWithFetcher(registryUri.Scheme), LogLevel.Information, Times.Once());
+            _logger.ValidateLog(StandardStrings.ClientInitWithFetcher(registryUri.Scheme), LogLevel.Trace, Times.Once());
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace Azure.DigitalTwins.Resolver.Tests
 
             client = ResolverClient.FromRemoteRepository(registryUriString, _logger.Object);
             Assert.AreEqual(registryUri, client.RepositoryUri);
-            _logger.ValidateLog(StandardStrings.ClientInitWithFetcher(registryUri.Scheme), LogLevel.Information, Times.Once());
+            _logger.ValidateLog(StandardStrings.ClientInitWithFetcher(registryUri.Scheme), LogLevel.Trace, Times.Once());
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace Azure.DigitalTwins.Resolver.Tests
             client = ResolverClient.FromLocalRepository(testModelRegistryPath, _logger.Object);
             Assert.AreEqual(registryUri, client.RepositoryUri);
 
-            _logger.ValidateLog(StandardStrings.ClientInitWithFetcher(registryUri.Scheme), LogLevel.Information, Times.Once());
+            _logger.ValidateLog(StandardStrings.ClientInitWithFetcher(registryUri.Scheme), LogLevel.Trace, Times.Once());
         }
 
         [TestCase("dtmi:com:example:Thermostat;1", true)]

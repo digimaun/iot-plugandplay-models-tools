@@ -29,7 +29,7 @@ namespace Azure.DigitalTwins.Resolver
             Settings = settings ?? new ResolverClientSettings();
             RepositoryUri = repositoryUri;
 
-            _logger.LogInformation(StandardStrings.ClientInitWithFetcher(repositoryUri.Scheme));
+            _logger.LogTrace(StandardStrings.ClientInitWithFetcher(repositoryUri.Scheme));
 
             if (repositoryUri.Scheme == "file")
             {
@@ -89,10 +89,10 @@ namespace Azure.DigitalTwins.Resolver
                 string targetDtmi = toProcessModels.Dequeue();
                 if (processedModels.ContainsKey(targetDtmi))
                 {
-                    _logger.LogInformation(StandardStrings.SkippingPreProcessedDtmi(targetDtmi));
+                    _logger.LogTrace(StandardStrings.SkippingPreProcessedDtmi(targetDtmi));
                     continue;
                 }
-                _logger.LogInformation(StandardStrings.ProcessingDtmi(targetDtmi));
+                _logger.LogTrace(StandardStrings.ProcessingDtmi(targetDtmi));
 
                 FetchResult result = await this.FetchAsync(targetDtmi);
                 if (result.FromExpanded)
@@ -114,7 +114,7 @@ namespace Azure.DigitalTwins.Resolver
                     IList<string> dependencies = metadata.Dependencies;
 
                     if (dependencies.Count > 0)
-                        _logger.LogInformation(StandardStrings.DiscoveredDependencies(dependencies));
+                        _logger.LogTrace(StandardStrings.DiscoveredDependencies(dependencies));
 
                     foreach (string dep in dependencies)
                     {

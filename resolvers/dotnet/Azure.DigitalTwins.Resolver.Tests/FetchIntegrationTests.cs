@@ -44,7 +44,7 @@ namespace Azure.DigitalTwins.Resolver.Tests
             Assert.True(!string.IsNullOrEmpty(fetchResult.Path));
             Assert.AreEqual(fetchResult.FromExpanded, fetchExpanded);
 
-            _logger.ValidateLog(StandardStrings.FetchingContent(fetcherPath), LogLevel.Information, Times.Once());
+            _logger.ValidateLog(StandardStrings.FetchingContent(fetcherPath), LogLevel.Trace, Times.Once());
         }
 
         [Test]
@@ -84,7 +84,7 @@ namespace Azure.DigitalTwins.Resolver.Tests
             Assert.True(!string.IsNullOrEmpty(fetchResult.Path));
             Assert.AreEqual(fetchResult.FromExpanded, fetchExpanded);
 
-            _logger.ValidateLog($"{StandardStrings.FetchingContent(fetcherPath)}", LogLevel.Information, Times.Once());
+            _logger.ValidateLog($"{StandardStrings.FetchingContent(fetcherPath)}", LogLevel.Trace, Times.Once());
         }
 
         [Test]
