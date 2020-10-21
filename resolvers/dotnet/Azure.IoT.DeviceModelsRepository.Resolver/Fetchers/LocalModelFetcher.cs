@@ -44,7 +44,7 @@ namespace Azure.IoT.DeviceModelsRepository.Resolver.Fetchers
                 {
                     return new FetchResult()
                     {
-                        Definition = await File.ReadAllTextAsync(tryContentPath, Encoding.UTF8),
+                        Definition = File.ReadAllText(tryContentPath, Encoding.UTF8),
                         Path = tryContentPath
                     };
                 }

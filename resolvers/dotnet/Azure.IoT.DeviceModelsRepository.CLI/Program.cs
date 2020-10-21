@@ -69,7 +69,8 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
         {
             ResolverClient client;
             client = Directory.Exists(repository) ?
-                ResolverClient.FromLocalRepository(repository, logger) : ResolverClient.FromRemoteRepository(repository, logger);
+                ResolverClient.FromLocalRepository(repository, logger:logger) : 
+                new ResolverClient(new Uri(repository), logger:logger);
             return client;
         }
 

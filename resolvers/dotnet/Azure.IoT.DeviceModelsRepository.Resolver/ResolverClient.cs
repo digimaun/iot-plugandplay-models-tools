@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Azure.IoT.DeviceModelsRepository.Resolver
 {
@@ -10,44 +11,44 @@ namespace Azure.IoT.DeviceModelsRepository.Resolver
     {
         readonly RepositoryHandler repositoryHandler = null;
 
-        public static ResolverClient FromRemoteRepository(string repositoryUri, ILogger logger = null, ResolverClientSettings settings = null)
-        {
-            return new ResolverClient(new Uri(repositoryUri), logger, settings);
-        }
-
-        public static ResolverClient FromLocalRepository(string repositoryPath, ILogger logger = null, ResolverClientSettings settings = null)
+        public static ResolverClient FromLocalRepository(string repositoryPath, ResolverClientOptions options = null, ILogger logger = null)
         {
             repositoryPath = Path.GetFullPath(repositoryPath);
-            return new ResolverClient(new Uri($"file://{repositoryPath}"), logger, settings);
+            return new ResolverClient(new Uri($"file://{repositoryPath}"), options, logger);
         }
 
-        public ResolverClient(Uri repositoryUri, ILogger logger = null, ResolverClientSettings settings = null)
+        public ResolverClient() : this(new Uri(""), null, null) { }
+
+        public ResolverClient(Uri repositoryUri): this(repositoryUri, null, null) { }
+
+        public ResolverClient(Uri repositoryUri, ResolverClientOptions options): this(repositoryUri, options, null) { }
+
+        public ResolverClient(Uri repositoryUri, ResolverClientOptions options = null, ILogger logger = null)
         {
-            this.repositoryHandler = new RepositoryHandler(repositoryUri, logger, settings);
+            this.repositoryHandler = new RepositoryHandler(repositoryUri, options, logger);
         }
 
-        public async Task<IDictionary<string, string>> ResolveAsync(string dtmi)
+        public virtual async Task<IDictionary<string, string>> ResolveAsync(string dtmi)
         {
             return await this.repositoryHandler.ProcessAsync(dtmi);
         }
 
-        public async Task<IDictionary<string, string>> ResolveAsync(params string[] dtmis)
+        public virtual async Task<IDictionary<string, string>> ResolveAsync(params string[] dtmis)
         {
             return await this.repositoryHandler.ProcessAsync(dtmis);
         }
 
-        public async Task<IDictionary<string, string>> ResolveAsync(IEnumerable<string> dtmis)
+        public virtual async Task<IDictionary<string, string>> ResolveAsync(IEnumerable<string> dtmis)
         {
             return await this.repositoryHandler.ProcessAsync(dtmis);
         }
 
-        public string GetPath(string dtmi) => repositoryHandler.ToPath(dtmi);
-        
-        public static bool IsValidDtmi(string dtmi) => RepositoryHandler.IsValidDtmi(dtmi);
-        
+        public virtual string GetPath(string dtmi) => repositoryHandler.ToPath(dtmi);
+
+        public static bool IsValidDtmi(string dtmi) => DtmiConventions.IsDtmi(dtmi);
 
         public Uri RepositoryUri  => repositoryHandler.RepositoryUri;
 
-        public ResolverClientSettings Settings => repositoryHandler.Settings;
+        public ResolverClientOptions Settings => repositoryHandler.Settings;
     }
 }
