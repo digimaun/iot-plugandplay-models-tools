@@ -1,0 +1,17 @@
+name: Unpublish GitHub
+
+on:
+  workflow_dispatch:
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure GitHub feed
+        run: dotnet nuget add source https://nuget.pkg.github.com/Azure/index.json -n github -u Azure -p ${{secrets.GITHUB_TOKEN}} --store-password-in-clear-text
+
+      - name: Delete from Nuget
+        run: |
+             dotnet nuget delete Azure.DigitalTwins.Validator 0.0.1 --non-interactive
+             dotnet nuget delete Azure.DigitalTwins.Resolver.Extensions 0.0.1 --non-interactive
+             dotnet nuget delete Azure.IoT.DeviceModelsRepository.Resolver.Extensions 0.0.1 --non-interactive
