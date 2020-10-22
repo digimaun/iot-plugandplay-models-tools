@@ -12,6 +12,6 @@ jobs:
 
       - name: Delete from Nuget
         run: |
-             dotnet nuget delete Azure.DigitalTwins.Validator 0.0.1 --non-interactive
-             dotnet nuget delete Azure.DigitalTwins.Resolver.Extensions 0.0.1 --non-interactive
-             dotnet nuget delete Azure.IoT.DeviceModelsRepository.Resolver.Extensions 0.0.1 --non-interactive
+             dotnet nuget delete --source github Azure.DigitalTwins.Validator 0.0.1 --non-interactive
+             dotnet nuget delete --source github Azure.DigitalTwins.Resolver.Extensions 0.0.1 --non-interactive
+             dotnet nuget delete --source github Azure.IoT.DeviceModelsRepository.Resolver.Extensions 0.0.1 --non-interactive
