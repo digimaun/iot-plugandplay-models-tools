@@ -54,11 +54,6 @@ namespace Azure.IoT.DeviceModelsRepository.Resolver
             return _modelFetcher.GetPath(dtmi, this.RepositoryUri);
         }
 
-        public static bool IsValidDtmi(string dtmi)
-        {
-            return DtmiConventions.IsDtmi(dtmi);
-        }
-
         public async Task<IDictionary<string, string>> ProcessAsync(string dtmi)
         {
             return await this.ProcessAsync(new List<string>() { dtmi });

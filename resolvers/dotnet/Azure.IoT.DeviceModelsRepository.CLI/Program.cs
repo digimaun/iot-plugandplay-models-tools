@@ -67,11 +67,10 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 
         private static ResolverClient InitializeClient(string repository, ILogger logger)
         {
-            ResolverClient client;
-            client = Directory.Exists(repository) ?
-                ResolverClient.FromLocalRepository(repository, logger:logger) : 
-                new ResolverClient(new Uri(repository), logger:logger);
-            return client;
+            return new ResolverClient(
+                repository,
+                new ResolverClientOptions(DependencyResolutionOption.FromExpanded),
+                logger);
         }
 
         private static Command BuildExportCommand()
@@ -250,7 +249,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                 try
                 {
                     var newModels = await ModelImporter.ImportModels(modelFile, repository, force, logger);
-                    foreach(var model in newModels)
+                    foreach (var model in newModels)
                     {
                         var validationResult = await validateFile(model, repository.FullName, true, logger, parser);
                         if (validationResult != ReturnCodes.Success)

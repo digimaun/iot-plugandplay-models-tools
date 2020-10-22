@@ -1,23 +1,16 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
 
 namespace Azure.IoT.DeviceModelsRepository.Resolver
 {
     public class ResolverClient
     {
-        readonly RepositoryHandler repositoryHandler = null;
+        public const string DefaultRepository = "https://devicemodels.azure.com";
+        private readonly RepositoryHandler repositoryHandler = null;
 
-        public static ResolverClient FromLocalRepository(string repositoryPath, ResolverClientOptions options = null, ILogger logger = null)
-        {
-            repositoryPath = Path.GetFullPath(repositoryPath);
-            return new ResolverClient(new Uri($"file://{repositoryPath}"), options, logger);
-        }
-
-        public ResolverClient() : this(new Uri(""), null, null) { }
+        public ResolverClient() : this(new Uri(DefaultRepository), null, null) { }
 
         public ResolverClient(Uri repositoryUri): this(repositoryUri, null, null) { }
 
@@ -28,14 +21,18 @@ namespace Azure.IoT.DeviceModelsRepository.Resolver
             this.repositoryHandler = new RepositoryHandler(repositoryUri, options, logger);
         }
 
+        public ResolverClient(string repositoryUriStr) : this(repositoryUriStr, null, null) { }
+
+        public ResolverClient(string repositoryUriStr, ResolverClientOptions options) : this(repositoryUriStr, options, null) { }
+
+        public ResolverClient(string repositoryUriStr, ResolverClientOptions options = null, ILogger logger = null)
+        {
+            this.repositoryHandler = new RepositoryHandler(new Uri(repositoryUriStr), options, logger);
+        }
+
         public virtual async Task<IDictionary<string, string>> ResolveAsync(string dtmi)
         {
             return await this.repositoryHandler.ProcessAsync(dtmi);
-        }
-
-        public virtual async Task<IDictionary<string, string>> ResolveAsync(params string[] dtmis)
-        {
-            return await this.repositoryHandler.ProcessAsync(dtmis);
         }
 
         public virtual async Task<IDictionary<string, string>> ResolveAsync(IEnumerable<string> dtmis)
