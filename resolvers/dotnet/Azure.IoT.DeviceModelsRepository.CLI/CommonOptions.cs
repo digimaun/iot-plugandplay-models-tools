@@ -36,15 +36,18 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             }
         }
 
-        public static Option<string> LocalRepo
+        public static Option<DirectoryInfo> LocalRepo
         {
             get
             {
-                return new Option<string>(
+                return new Option<DirectoryInfo>(
                   new string[] { "--local-repo", "--local-repository" },
                   description: "Local Model Repository path. " +
                   "If no path is provided the current working directory is used.",
-                  getDefaultValue: () => null);
+                  getDefaultValue: () => null)
+                {
+                    Argument = new Argument<DirectoryInfo>().ExistingOnly()
+                };
             }
         }
 
@@ -87,7 +90,8 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 
         public static Option<bool> Strict
         {
-            get{
+            get
+            {
                 return new Option<bool>(
                     "--strict",
                     description: "Runs additional validation of file paths, DTMI scoping, and searches for reserved words.",

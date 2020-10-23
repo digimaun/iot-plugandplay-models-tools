@@ -55,10 +55,9 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             // write file to repository location
             var newPath = DtmiConventions.DtmiToQualifiedPath(rootId.GetString(), repository.FullName);
 
-            // TODO: consistent paths. Use global arg formatters.
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                newPath = newPath.Replace("\\", "/");
+                newPath = newPath.Replace("/", "\\");
             }
 
             if (!File.Exists(newPath))
@@ -78,7 +77,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 
         private static void CheckCreateDirectory(string filePath)
         {
-            var lastDirectoryIndex = filePath.LastIndexOf("/");
+            var lastDirectoryIndex = filePath.LastIndexOf(Path.DirectorySeparatorChar);
             var directory = filePath.Substring(0, lastDirectoryIndex);
             if (!Directory.Exists(directory))
             {
