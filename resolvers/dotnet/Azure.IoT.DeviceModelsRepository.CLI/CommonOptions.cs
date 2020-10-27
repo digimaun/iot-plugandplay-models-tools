@@ -8,15 +8,18 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 {
     public class CommonOptions
     {
+        readonly static string _defaultRepository = ResolverClient.DefaultRepository;
+
         public static Option<string> Dtmi
         {
             get
             {
                 Option<string> dtmiOption = new Option<string>(
                     "--dtmi",
-                    description: "Digital Twin Model Identifier. Example: 'dtmi:com:example:Thermostat;1'");
+                    description: "Digital Twin Model Identifier. Example: 'dtmi:com:example:Thermostat;1' ");
 
-                dtmiOption.AddValidator(option => {
+                dtmiOption.AddValidator(option =>
+                {
                     string value = option.GetValueOrDefault<string>();
                     if (!ResolverClient.IsValidDtmi(value))
                     {
@@ -34,20 +37,14 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             }
         }
 
-        public static Option<string> Repository
+        public static Option<string> Repo
         {
             get
             {
                 Option<string> repoOption = new Option<string>(
-                  "--repository",
-                  description: "Model Repository location. Can be remote endpoint or local directory.",
-                  getDefaultValue: () => ResolverClient.DefaultRepository
-                  );
-
-                repoOption.Argument = new Argument<string>
-                {
-                    Arity = ArgumentArity.ExactlyOne
-                };
+                    "--repo",
+                    description: "Model Repository location. Supports remote endpoint or local directory. ",
+                    getDefaultValue: () => ResolverClient.DefaultRepository);
 
                 return repoOption;
             }
@@ -58,9 +55,8 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             get
             {
                 return new Option<DirectoryInfo>(
-                  new string[] { "--local-repo", "--local-repository" },
-                  description: "Local Model Repository path. " +
-                  "If no path is provided the current working directory is used.",
+                  "--local-repo",
+                  description: "Local Model Repository path. If no path is provided the current working directory is used. ",
                   getDefaultValue: () => null)
                 {
                     Argument = new Argument<DirectoryInfo>().ExistingOnly()
@@ -74,7 +70,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             {
                 return new Option<string>(
                     new string[] { "--output", "-o" },
-                    description: "Desired file path to write result contents.",
+                    description: "Desired file path to write result contents. ",
                     getDefaultValue: () => null
                     );
             }
@@ -86,7 +82,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             {
                 return new Option<FileInfo>(
                     "--model-file",
-                    description: "Path to file containing Digital Twins model content.")
+                    description: "Path to file containing Digital Twins model content. ")
                 {
                     Argument = new Argument<FileInfo>().ExistingOnly()
                 };
@@ -98,9 +94,9 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             get
             {
                 return new Option<bool>(
-                  "--silent",
-                  description: "Silences command result output on stdout.",
-                  getDefaultValue: () => false)
+                    "--silent",
+                    description: "Silences command result output on stdout.",
+                    getDefaultValue: () => false)
                 {
                     Argument = new Argument<bool>
                     {
@@ -116,9 +112,14 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             {
                 return new Option<bool>(
                     "--strict",
-                    description: "Runs additional validation of file paths, DTMI scoping, and searches for reserved words.",
-                    getDefaultValue: () => false
-                );
+                    description: "Runs additional verifications for a model including file paths, DTMI scoping and reserved words.",
+                    getDefaultValue: () => false)
+                {
+                    Argument = new Argument<bool>
+                    {
+                        Arity = ArgumentArity.ZeroOrOne
+                    },
+                };
             }
         }
 
@@ -129,7 +130,6 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                 return new JsonDocumentOptions
                 {
                     AllowTrailingCommas = true,
-
                 };
             }
         }

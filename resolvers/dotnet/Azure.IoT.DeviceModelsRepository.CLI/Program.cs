@@ -66,17 +66,20 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
         private async static Task PrintHeaders()
         {
             await Console.Out.WriteLineAsync($"dmr-client/{_cliVersion} parser/{_parserVersion} resolver/{_resolverVersion}");
-            await Console.Out.WriteLineAsync(Environment.NewLine);
         }
 
         private async static Task PrintInput(string command, Dictionary<string, string> inputs)
         {
-            await Console.Out.WriteLineAsync($"Executing {command}");
+            StringBuilder builder = new StringBuilder();
+            builder.Append($"{command}");
             foreach (var item in inputs)
             {
-                await Console.Out.WriteLineAsync($"{item.Key}={item.Value}");
+                if (item.Value != null)
+                {
+                    builder.Append($" --{item.Key} {item.Value}");
+                }
             }
-            await Console.Out.WriteLineAsync(Environment.NewLine);
+            await Console.Out.WriteLineAsync($"{builder}{Environment.NewLine}");
         }
 
         private static Command BuildExportCommand()
@@ -84,7 +87,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             Command exportModelCommand = new Command("export")
             {
                 CommonOptions.Dtmi,
-                CommonOptions.Repository,
+                CommonOptions.Repo,
                 CommonOptions.Output,
                 CommonOptions.Silent,
                 CommonOptions.ModelFile
@@ -92,8 +95,8 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 
             exportModelCommand.Description =
                 "Retrieve a model and its dependencies by dtmi or model file using the target repository for model resolution.";
-            exportModelCommand.Handler = CommandHandler.Create<string, string, IHost, string, bool, FileInfo>(
-                async (dtmi, repository, host, output, silent, modelFile) =>
+            exportModelCommand.Handler = CommandHandler.Create<string, string, string, bool, FileInfo, IHost>(
+                async (dtmi, repo, output, silent, modelFile, host) =>
             {
                 ILogger logger = GetLogger(host);
 
@@ -103,8 +106,9 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                     await PrintInput("export",
                         new Dictionary<string, string> {
                             {"dtmi", dtmi },
-                            {"repository", repository },
-                            {"output", output }
+                            {"model-file", modelFile != null ? modelFile.FullName : null},
+                            {"repo", repo },
+                            {"output", output },
                         });
                 }
 
@@ -119,7 +123,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                     return ReturnCodes.InvalidArguments;
                 }
 
-                Parsing parsing = new Parsing(repository, logger);
+                Parsing parsing = new Parsing(repo, logger);
                 try
                 {
                     if (string.IsNullOrWhiteSpace(dtmi))
@@ -176,7 +180,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             Command validateModelCommand = new Command("validate")
             {
                 modelFileOption,
-                CommonOptions.Repository,
+                CommonOptions.Repo,
                 CommonOptions.Strict
             };
 
