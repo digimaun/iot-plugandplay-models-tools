@@ -27,7 +27,8 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             await parser.ParseAsync(new string[] { File.ReadAllText(modelFile.FullName) });
             if (strict)
             {
-                return await modelFile.Validate();
+                // Additional constraints DMR model ingestion requires of DTDL models.
+                return await modelFile.StrictValidate();
             }
 
             return true;

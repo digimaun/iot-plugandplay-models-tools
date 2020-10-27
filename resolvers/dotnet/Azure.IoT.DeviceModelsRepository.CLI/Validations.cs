@@ -12,17 +12,17 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 {
     public static class Validations
     {
-        public async static Task<bool> Validate(this FileInfo fileInfo, ILogger logger = null)
+        public async static Task<bool> StrictValidate(this FileInfo fileInfo, ILogger logger = null)
         {
             var fileName = fileInfo.FullName;
             var fileText = await File.ReadAllTextAsync(fileName);
             var model = JsonDocument.Parse(fileText).RootElement;
 
-
             return ValidateFilePath(fileName, logger) &
                 ScanForReservedWords(fileText, logger) &
                 ValidateDTMIs(model, fileName, logger);
         }
+
         public static bool FindAllIds(string fileText, Func<string, bool> validation)
         {
             var valid = true;
@@ -71,28 +71,21 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             logger = logger ?? NullLogger.Instance;
             var dtmiNamespace = GetDtmiNamespace(GetRootId(model, fileName));
             var fileText = model.ToString();
-            try
+
+            return FindAllIds(fileText, (id) =>
             {
-                return FindAllIds(fileText, (id) =>
+                if (!ResolverClient.IsValidDtmi(id))
                 {
-                    if (!ResolverClient.IsValidDtmi(id))
-                    {
-                        logger.LogError($"Invalid DTMI format:\n{id}");
-                        return false;
-                    }
-                    if (!id.StartsWith(dtmiNamespace))
-                    {
-                        logger.LogError($"Invalid sub DTMI format:\n{id}");
-                        return false;
-                    }
-                    return true;
-                });
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex.Message);
-                return false;
-            }
+                    logger.LogError($"Invalid DTMI format:\n{id}");
+                    return false;
+                }
+                if (!id.StartsWith(dtmiNamespace))
+                {
+                    logger.LogError($"Invalid sub DTMI format:\n{id}");
+                    return false;
+                }
+                return true;
+            });
         }
 
         public static JsonElement GetRootId(JsonElement model, string fileName)
@@ -100,7 +93,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             JsonElement rootId;
             if (!model.TryGetProperty("@id", out rootId))
             {
-                throw new MissingDTMIException(fileName);
+                throw new MissingRootDTMIException(fileName);
             }
 
             return rootId;

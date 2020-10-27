@@ -2,14 +2,13 @@
 using System.CommandLine;
 using System.CommandLine.Parsing;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace Azure.IoT.DeviceModelsRepository.CLI
 {
     public class CommonOptions
     {
-        readonly static string _defaultRepository = ResolverClient.DefaultRepository;
-
         public static Option<string> Dtmi
         {
             get
@@ -120,6 +119,17 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                         Arity = ArgumentArity.ZeroOrOne
                     },
                 };
+            }
+        }
+
+        public static Option<DependencyResolutionOption> DependencyResolution
+        {
+            get
+            {
+                return new Option<DependencyResolutionOption>(
+                    "--dependencies",
+                    description: "Indicates how model dependencies should be resolved. ",
+                    getDefaultValue: () => DependencyResolutionOption.Enabled);
             }
         }
 

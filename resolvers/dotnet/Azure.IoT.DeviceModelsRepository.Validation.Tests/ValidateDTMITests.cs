@@ -13,7 +13,7 @@ namespace Azure.IoT.DeviceModelsRepository.Validation.Tests
             var doc = JsonDocument.Parse(@"{
                 ""something"": ""dtmi:com:example:ThermoStat;1""
             }");
-            Assert.Throws<MissingDTMIException>(() => Validations.ValidateDTMIs(doc.RootElement));
+            Assert.Throws<MissingRootDTMIException>(() => Validations.ValidateDTMIs(doc.RootElement));
         }
         [Test]
         public void ValidatesRootId()

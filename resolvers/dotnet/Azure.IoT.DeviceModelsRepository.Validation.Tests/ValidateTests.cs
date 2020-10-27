@@ -17,7 +17,7 @@ namespace Azure.IoT.DeviceModelsRepository.Validation.Tests
             var logger = mockLogger.Object;
             var fileInfo = new FileInfo("../../../TestModelRepo/badfile/AllBad.json");
             var fileName = fileInfo.FullName;
-            var validationResult = await Validations.Validate(fileInfo, logger);
+            var validationResult = await Validations.StrictValidate(fileInfo, logger);
             Assert.False(validationResult);
             mockLogger.Verify(l => l.Log(
                 LogLevel.Error,
