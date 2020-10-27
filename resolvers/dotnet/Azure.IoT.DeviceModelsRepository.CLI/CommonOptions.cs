@@ -1,38 +1,55 @@
-﻿using System.CommandLine;
+﻿using Azure.IoT.DeviceModelsRepository.Resolver;
+using System.CommandLine;
+using System.CommandLine.Parsing;
 using System.IO;
 using System.Text.Json;
 
 namespace Azure.IoT.DeviceModelsRepository.CLI
 {
-    class CommonOptions
+    public class CommonOptions
     {
-        private const string _defaultRepository = "https://devicemodels.azure.com";
-
         public static Option<string> Dtmi
         {
             get
             {
-                return new Option<string>(
-                "--dtmi",
-                description: "Digital Twin Model Identifier. Example: dtmi:com:example:Thermostat;1")
-                {
-                    Argument = new Argument<string>
+                Option<string> dtmiOption = new Option<string>(
+                    "--dtmi",
+                    description: "Digital Twin Model Identifier. Example: 'dtmi:com:example:Thermostat;1'");
+
+                dtmiOption.AddValidator(option => {
+                    string value = option.GetValueOrDefault<string>();
+                    if (!ResolverClient.IsValidDtmi(value))
                     {
-                        Arity = ArgumentArity.ExactlyOne,
+                        return $"Invalid dtmi format '{value}'.";
                     }
+                    return null;
+                });
+
+                dtmiOption.Argument = new Argument<string>
+                {
+                    Arity = ArgumentArity.ExactlyOne
                 };
+
+                return dtmiOption;
             }
         }
 
-        public static Option<string> Repo
+        public static Option<string> Repository
         {
             get
             {
-                return new Option<string>(
+                Option<string> repoOption = new Option<string>(
                   "--repository",
                   description: "Model Repository location. Can be remote endpoint or local directory.",
-                  getDefaultValue: () => _defaultRepository
+                  getDefaultValue: () => ResolverClient.DefaultRepository
                   );
+
+                repoOption.Argument = new Argument<string>
+                {
+                    Arity = ArgumentArity.ExactlyOne
+                };
+
+                return repoOption;
             }
         }
 
@@ -83,8 +100,13 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                 return new Option<bool>(
                   "--silent",
                   description: "Silences command result output on stdout.",
-                  getDefaultValue: () => false
-                  );
+                  getDefaultValue: () => false)
+                {
+                    Argument = new Argument<bool>
+                    {
+                        Arity = ArgumentArity.ZeroOrOne
+                    },
+                };
             }
         }
 

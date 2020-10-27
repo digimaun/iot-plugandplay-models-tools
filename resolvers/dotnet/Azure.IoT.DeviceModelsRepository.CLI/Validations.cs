@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Azure.IoT.DeviceModelsRepository.CLI.Exceptions;
+using Azure.IoT.DeviceModelsRepository.Resolver;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -74,7 +75,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             {
                 return FindAllIds(fileText, (id) =>
                 {
-                    if (!IsDtmi(id))
+                    if (!ResolverClient.IsValidDtmi(id))
                     {
                         logger.LogError($"Invalid DTMI format:\n{id}");
                         return false;
@@ -105,12 +106,6 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             return rootId;
         }
 
-        public static bool IsDtmi(string id)
-        {
-            var dtmiRegex = new Regex("^dtmi:(?:_+[A-Za-z0-9]|[A-Za-z])(?:[A-Za-z0-9_]*[A-Za-z0-9])?(?::(?:_+[A-Za-z0-9]|[A-Za-z])(?:[A-Za-z0-9_]*[A-Za-z0-9])?)*;[1-9][0-9]{0,8}$");
-            return dtmiRegex.IsMatch(id);
-        }
-
         public static string GetDtmiNamespace(JsonElement id)
         {
             var versionRegex = new Regex(";[1-9][0-9]{0,8}$");
@@ -119,8 +114,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 
         public static bool IsRelativePath(string repositoryPath)
         {
-            Uri testUri;
-            bool validUri = Uri.TryCreate(repositoryPath, UriKind.Relative, out testUri);
+            bool validUri = Uri.TryCreate(repositoryPath, UriKind.Relative, out Uri testUri);
             return validUri && testUri != null;
         }
     }

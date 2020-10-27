@@ -19,6 +19,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 
             return ImportModels(model, modelFile.FullName, repository, logger);
         }
+
         private static IEnumerable<FileInfo> ImportModels(JsonDocument document, string fileName, DirectoryInfo repository, ILogger logger)
         {
             var root = document.RootElement;
@@ -36,9 +37,9 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             {
                 logger.LogTrace($"Single item found in {fileName}");
                 yield return ImportModel(root, fileName, repository, logger);
-
             }
         }
+
         private static FileInfo ImportModel(JsonElement modelItem, string fileName, DirectoryInfo repository, ILogger logger)
         {
             //Do DTMI verification

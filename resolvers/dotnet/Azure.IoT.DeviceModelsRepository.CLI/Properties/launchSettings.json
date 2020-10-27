@@ -1,5 +1,9 @@
 {
   "profiles": {
+    "Azure.IoT.DeviceModelsRepository.CLI.SmokeTests.OneOff": {
+      "commandName": "Project",
+      "commandLineArgs": "export --dtmi abcd"
+    },
     "Azure.IoT.DeviceModelsRepository.CLI.SmokeTests.ResolveRemote": {
       "commandName": "Project",
       "commandLineArgs": "export --dtmi dtmi:com:example:Thermostat;1"

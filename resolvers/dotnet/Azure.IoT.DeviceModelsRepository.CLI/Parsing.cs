@@ -3,7 +3,6 @@ using Azure.IoT.DeviceModelsRepository.Resolver.Extensions;
 using Microsoft.Azure.DigitalTwins.Parser;
 using Microsoft.Extensions.Logging;
 using System.IO;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Azure.IoT.DeviceModelsRepository.CLI
@@ -13,15 +12,17 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
         private readonly ILogger _logger;
         private readonly string _repository;
 
-        public Parsing(string repository, ILogger logger){
+        public Parsing(string repository, ILogger logger)
+        {
             _logger = logger;
             _repository = repository;
         }
 
-        public async Task<bool> IsValidDtdlFileAsync(FileInfo modelFile, bool strict)
+        public async Task<bool> IsValidDtdlFileAsync(FileInfo modelFile, bool strict, 
+            DependencyResolutionOption resolutionOption = DependencyResolutionOption.Enabled)
         {
-            _logger.LogInformation($"Using repository: '{_repository}'");
-            ModelParser parser = GetParser();
+            _logger.LogTrace($"Using repository: '{_repository}'");
+            ModelParser parser = GetParser(resolutionOption);
 
             await parser.ParseAsync(new string[] { File.ReadAllText(modelFile.FullName) });
             if (strict)
@@ -32,9 +33,9 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             return true;
         }
 
-        public ModelParser GetParser()
+        public ModelParser GetParser(DependencyResolutionOption resolutionOption = DependencyResolutionOption.Enabled)
         {
-            ResolverClient client = GetResolver();
+            ResolverClient client = GetResolver(resolutionOption);
             ModelParser parser = new ModelParser
             {
                 DtmiResolver = client.ParserDtmiResolver
@@ -42,7 +43,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             return parser;
         }
 
-        public ResolverClient GetResolver()
+        public ResolverClient GetResolver(DependencyResolutionOption resolutionOption = DependencyResolutionOption.Enabled)
         {
             string repository = _repository;
             if (Validations.IsRelativePath(repository))
@@ -52,15 +53,14 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 
             return new ResolverClient(
                 repository,
-                new ResolverClientOptions(DependencyResolutionOption.TryFromExpanded),
+                new ResolverClientOptions(resolutionOption),
                 _logger);
         }
 
-        public string GetRootDtmiFromFile(FileInfo fileName)
+        public ModelMetadata GetModelMetadata(FileInfo fileName)
         {
-            JsonDocument jsonDocument = JsonDocument.Parse(File.ReadAllText(fileName.FullName));
-            JsonElement idElement = jsonDocument.RootElement.GetProperty("@id");
-            return idElement.GetString();
+            ModelQuery modelQuery = new ModelQuery(File.ReadAllText(fileName.FullName));
+            return modelQuery.GetMetadata();
         }
     }
 }
