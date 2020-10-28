@@ -247,6 +247,8 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                     Outputs.WriteOut($"Success{Environment.NewLine}", ConsoleColor.Green);
                 }
 
+                Outputs.WriteOut(Environment.NewLine);
+
                 return ReturnCodes.Success;
             });
 

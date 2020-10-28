@@ -16,7 +16,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
         public async static Task WriteErrorAsync(string msg)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            await Console.Error.WriteLineAsync(msg);
+            await Console.Error.WriteLineAsync($"{Environment.NewLine}{msg}");
             Console.ResetColor();
         }
 
