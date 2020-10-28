@@ -110,7 +110,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             {
                 return new Option<bool>(
                     alias: "--strict",
-                    description: "Runs additional verifications for a model including file paths, DTMI scoping and reserved words.",
+                    description: "Runs additional verifications for a model including file paths and DTMI scoping.",
                     getDefaultValue: () => false)
                 {
                     Argument = new Argument<bool>

@@ -262,9 +262,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                 CommonOptions.Strict,
                 CommonOptions.Silent
             };
-            importModelCommand.IsHidden = true;
-            importModelCommand.Description = "Adds a model to a local repository. " +
-                "Validates Id's, dependencies and places model content in the proper location.";
+            importModelCommand.Description = "Validates a local model file then adds it to the local repository.";
             importModelCommand.Handler = CommandHandler.Create<FileInfo, DirectoryInfo, DependencyResolutionOption, bool, bool, IHost>(
                 async (modelFile, localRepo, deps, silent, strict, host) =>
             {
@@ -300,15 +298,6 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 
                         if (strict)
                         {
-                            // TODO silent?
-                            Outputs.WriteOut("- Validating file path...");
-                            if (!Validations.IsValidDtmiPath(modelFile.FullName))
-                            {
-                                await Outputs.WriteErrorAsync($"File \"{modelFile.FullName}\" does not adhere to DMR naming conventions.");
-                                return ReturnCodes.ValidationError;
-                            }
-                            Outputs.WriteOut($"Success{Environment.NewLine}", ConsoleColor.Green);
-
                             Outputs.WriteOut("- Ensuring DTMIs namespace conformance...");
                             List<string> invalidSubDtmis = Validations.EnsureSubDtmiNamespace(content);
                             if (invalidSubDtmis.Count > 0)
@@ -350,6 +339,11 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                 catch (IOException ioEx)
                 {
                     await Outputs.WriteErrorAsync(ioEx.Message);
+                    return ReturnCodes.InvalidArguments;
+                }
+                catch (ArgumentException argEx)
+                {
+                    await Outputs.WriteErrorAsync(argEx.Message);
                     return ReturnCodes.InvalidArguments;
                 }
 
