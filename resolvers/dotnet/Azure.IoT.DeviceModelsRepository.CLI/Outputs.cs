@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Azure.IoT.DeviceModelsRepository.CLI
 {
-    class Outputs
+    internal class Outputs
     {
         public static readonly string ParserVersion = typeof(ModelParser).Assembly.GetName().Version.ToString();
         public static readonly string ResolverVersion = typeof(ResolverClient).Assembly.GetName().Version.ToString();
@@ -44,7 +44,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 
         public async static Task WriteInputsAsync(string command, Dictionary<string, string> inputs)
         {
-            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
             StringBuilder builder = new StringBuilder();
             builder.Append($"{command}");
             foreach (var item in inputs)

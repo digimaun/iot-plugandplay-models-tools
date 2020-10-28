@@ -2,12 +2,14 @@
 using Azure.IoT.DeviceModelsRepository.Resolver.Extensions;
 using Microsoft.Azure.DigitalTwins.Parser;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace Azure.IoT.DeviceModelsRepository.CLI
 {
-    public class Parsing
+    internal class Parsing
     {
         private readonly ILogger _logger;
         private readonly string _repository;
@@ -46,6 +48,22 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
         {
             ModelQuery modelQuery = new ModelQuery(File.ReadAllText(fileName.FullName));
             return modelQuery.GetMetadata();
+        }
+
+        public List<string> ExtractModels(FileInfo modelsFile)
+        {
+            List<string> result = new List<string>();
+            string modelText = File.ReadAllText(modelsFile.FullName);
+            using JsonDocument document = JsonDocument.Parse(modelText);
+            JsonElement root = document.RootElement;
+
+            if (root.ValueKind == JsonValueKind.Object)
+            {
+                result.Add(root.GetRawText());
+                return result;
+            }
+
+            throw new ArgumentException($"Importing model file contents of kind {root.ValueKind} is not yet supported.");
         }
     }
 }

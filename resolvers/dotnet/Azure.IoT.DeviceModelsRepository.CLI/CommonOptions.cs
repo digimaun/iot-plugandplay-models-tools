@@ -2,12 +2,11 @@
 using System.CommandLine;
 using System.CommandLine.Parsing;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace Azure.IoT.DeviceModelsRepository.CLI
 {
-    public class CommonOptions
+    internal class CommonOptions
     {
         public static Option<string> Dtmi
         {
