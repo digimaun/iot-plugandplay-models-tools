@@ -2,7 +2,7 @@
   "profiles": {
     "Azure.IoT.DeviceModelsRepository.CLI.SmokeTests.OneOff": {
       "commandName": "Project",
-      "commandLineArgs": "export --dtmi abcd"
+      "commandLineArgs": "validate --model-file ../../../../Azure.IoT.DeviceModelsRepository.Resolver.Tests/TestModelRepo/dtmi/com/example/temperaturecontroller-1.json"
     },
     "Azure.IoT.DeviceModelsRepository.CLI.SmokeTests.ResolveRemote": {
       "commandName": "Project",

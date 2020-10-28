@@ -9,9 +9,9 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 {
     class Outputs
     {
-        private static readonly string _parserVersion = typeof(ModelParser).Assembly.GetName().Version.ToString();
-        private static readonly string _resolverVersion = typeof(ResolverClient).Assembly.GetName().Version.ToString();
-        private static readonly string _cliVersion = typeof(Program).Assembly.GetName().Version.ToString();
+        public static readonly string ParserVersion = typeof(ModelParser).Assembly.GetName().Version.ToString();
+        public static readonly string ResolverVersion = typeof(ResolverClient).Assembly.GetName().Version.ToString();
+        public static readonly string CliVersion = typeof(Program).Assembly.GetName().Version.ToString();
 
         public async static Task WriteErrorAsync(string msg)
         {
@@ -23,8 +23,13 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
         public async static Task WriteHeadersAsync()
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            await Console.Out.WriteLineAsync($"dmr-client/{_cliVersion} parser/{_parserVersion} resolver/{_resolverVersion}");
+            await Console.Out.WriteLineAsync($"dmr-client/{CliVersion} parser/{ParserVersion} resolver/{ResolverVersion}");
             Console.ResetColor();
+        }
+
+        public static void WriteOut(string content)
+        {
+            Console.Out.Write(content);
         }
 
         public async static Task WriteInputsAsync(string command, Dictionary<string, string> inputs)

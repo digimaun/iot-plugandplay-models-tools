@@ -18,22 +18,6 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             _repository = repository;
         }
 
-        public async Task<bool> IsValidDtdlFileAsync(FileInfo modelFile, bool strict, 
-            DependencyResolutionOption resolutionOption = DependencyResolutionOption.Enabled)
-        {
-            _logger.LogTrace($"Using repository: '{_repository}'");
-            ModelParser parser = GetParser(resolutionOption);
-
-            await parser.ParseAsync(new string[] { File.ReadAllText(modelFile.FullName) });
-            if (strict)
-            {
-                // Additional constraints DMR model ingestion requires of DTDL models.
-                return await modelFile.StrictValidate();
-            }
-
-            return true;
-        }
-
         public ModelParser GetParser(DependencyResolutionOption resolutionOption = DependencyResolutionOption.Enabled)
         {
             ResolverClient client = GetResolver(resolutionOption);

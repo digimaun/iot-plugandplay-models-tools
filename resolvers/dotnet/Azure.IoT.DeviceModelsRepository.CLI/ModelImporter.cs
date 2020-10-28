@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Azure.IoT.DeviceModelsRepository.CLI.Exceptions;
 using Azure.IoT.DeviceModelsRepository.Resolver;
 using Microsoft.Extensions.Logging;
 
@@ -12,6 +11,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 {
     internal static class ModelImporter
     {
+        /*
         internal static async Task<IEnumerable<FileInfo>> ImportModels(FileInfo modelFile, DirectoryInfo repository, ILogger logger)
         {
             var fileText = await File.ReadAllTextAsync(modelFile.FullName);
@@ -48,6 +48,8 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             {
                 throw new InvalidDTMIException(rootId);
             }
+
+
             if (!Validations.ValidateDTMIs(modelItem, fileName, logger))
             {
                 throw new InvalidDTMIException(fileName);
@@ -85,5 +87,6 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                 Directory.CreateDirectory(directory);
             }
         }
+        */
     }
 }

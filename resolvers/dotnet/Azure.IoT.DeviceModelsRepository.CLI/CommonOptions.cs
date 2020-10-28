@@ -14,8 +14,8 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             get
             {
                 Option<string> dtmiOption = new Option<string>(
-                    "--dtmi",
-                    description: "Digital Twin Model Identifier. Example: 'dtmi:com:example:Thermostat;1' ");
+                    alias: "--dtmi",
+                    description: "Digital Twin Model Identifier. Example: \"dtmi:com:example:Thermostat;1\" ");
 
                 dtmiOption.AddValidator(option =>
                 {
@@ -41,7 +41,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             get
             {
                 Option<string> repoOption = new Option<string>(
-                    "--repo",
+                    alias: "--repo",
                     description: "Model Repository location. Supports remote endpoint or local directory. ",
                     getDefaultValue: () => ResolverClient.DefaultRepository);
 
@@ -54,7 +54,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             get
             {
                 return new Option<DirectoryInfo>(
-                  "--local-repo",
+                  alias: "--local-repo",
                   description: "Local Model Repository path. If no path is provided the current working directory is used. ",
                   getDefaultValue: () => null)
                 {
@@ -68,7 +68,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             get
             {
                 return new Option<string>(
-                    new string[] { "--output", "-o" },
+                    aliases: new string[] { "--output", "-o" },
                     description: "Desired file path to write result contents. ",
                     getDefaultValue: () => null
                     );
@@ -80,7 +80,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             get
             {
                 return new Option<FileInfo>(
-                    "--model-file",
+                    new[] { "-m", "--model-file" },
                     description: "Path to file containing Digital Twins model content. ")
                 {
                     Argument = new Argument<FileInfo>().ExistingOnly()
@@ -93,7 +93,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             get
             {
                 return new Option<bool>(
-                    "--silent",
+                    alias: "--silent",
                     description: "Silences command result output on stdout.",
                     getDefaultValue: () => false)
                 {
@@ -110,7 +110,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             get
             {
                 return new Option<bool>(
-                    "--strict",
+                    alias: "--strict",
                     description: "Runs additional verifications for a model including file paths, DTMI scoping and reserved words.",
                     getDefaultValue: () => false)
                 {
@@ -122,12 +122,12 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             }
         }
 
-        public static Option<DependencyResolutionOption> DependencyResolution
+        public static Option<DependencyResolutionOption> Deps
         {
             get
             {
                 return new Option<DependencyResolutionOption>(
-                    "--dependencies",
+                    alias: "--deps",
                     description: "Indicates how model dependencies should be resolved. ",
                     getDefaultValue: () => DependencyResolutionOption.Enabled);
             }

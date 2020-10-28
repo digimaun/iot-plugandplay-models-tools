@@ -1,5 +1,4 @@
-﻿using Azure.IoT.DeviceModelsRepository.CLI.Exceptions;
-using Azure.IoT.DeviceModelsRepository.Resolver;
+﻿using Azure.IoT.DeviceModelsRepository.Resolver;
 using Microsoft.Azure.DigitalTwins.Parser;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -42,7 +41,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
         {
             RootCommand root = new RootCommand("parent")
             {
-                Description = "Microsoft IoT Plug and Play Device Model Repository CLI"
+                Description = $"Microsoft IoT Plug and Play Device Models Repository CLI v{Outputs.CliVersion}"
             };
 
             root.Add(BuildExportCommand());
@@ -61,20 +60,23 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 
         private static Command BuildExportCommand()
         {
+            var modelFileOpt = CommonOptions.ModelFile;
+            modelFileOpt.IsHidden = true;
+
             Command exportModelCommand = new Command("export")
             {
                 CommonOptions.Dtmi,
+                modelFileOpt,
                 CommonOptions.Repo,
+                CommonOptions.Deps,
                 CommonOptions.Output,
-                CommonOptions.Silent,
-                CommonOptions.DependencyResolution,
-                CommonOptions.ModelFile
+                CommonOptions.Silent
             };
 
             exportModelCommand.Description =
                 "Retrieve a model and its dependencies by dtmi or model file using the target repository for model resolution.";
             exportModelCommand.Handler = CommandHandler.Create<string, string, string, bool, FileInfo, DependencyResolutionOption, IHost>(
-                async (dtmi, repo, output, silent, modelFile, dependencies, host) =>
+                async (dtmi, repo, output, silent, modelFile, deps, host) =>
             {
                 ILogger logger = GetLogger(host);
 
@@ -86,7 +88,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                             {"dtmi", dtmi },
                             {"model-file", modelFile?.FullName},
                             {"repo", repo },
-                            {"dependencies", dependencies.ToString() },
+                            {"deps", deps.ToString() },
                             {"output", output },
                         });
                 }
@@ -96,7 +98,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                 //check that we have either model file or dtmi
                 if (string.IsNullOrWhiteSpace(dtmi) && modelFile == null)
                 {
-                    string invalidArgMsg = "Please specify a value for --dtmi OR --model-file!";
+                    string invalidArgMsg = "Please specify a value for --dtmi!";
                     await Outputs.WriteErrorAsync(invalidArgMsg);
                     return ReturnCodes.InvalidArguments;
                 }
@@ -109,16 +111,16 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                         dtmi = parsing.GetModelMetadata(modelFile).Id;
                         if (string.IsNullOrWhiteSpace(dtmi))
                         {
-                            await Console.Error.WriteLineAsync("Model is missing root @id!");
+                            await Outputs.WriteErrorAsync("Model is missing root @id!");
                             return ReturnCodes.ParserError;
                         }
                     }
 
-                    result = await parsing.GetResolver(resolutionOption: dependencies).ResolveAsync(dtmi);
+                    result = await parsing.GetResolver(resolutionOption: deps).ResolveAsync(dtmi);
                 }
                 catch (ResolverException resolverEx)
                 {
-                    await Console.Error.WriteLineAsync(resolverEx.Message);
+                    await Outputs.WriteErrorAsync(resolverEx.Message);
                     return ReturnCodes.ResolutionError;
                 }
 
@@ -157,7 +159,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             {
                 modelFileOption,
                 CommonOptions.Repo,
-                CommonOptions.DependencyResolution,
+                CommonOptions.Deps,
                 CommonOptions.Strict,
                 CommonOptions.Silent
             };
@@ -165,7 +167,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             validateModelCommand.Description =
                 "Validates a model using the DTDL model parser & resolver. The target repository is used for model resolution. ";
             validateModelCommand.Handler = CommandHandler.Create<FileInfo, string, IHost, bool, bool, DependencyResolutionOption>(
-                async (modelFile, repo, host, silent, strict, dependencies) =>
+                async (modelFile, repo, host, silent, strict, deps) =>
             {
                 ILogger logger = GetLogger(host);
                 if (!silent)
@@ -175,19 +177,29 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                         new Dictionary<string, string> {
                             {"model-file", modelFile.FullName },
                             {"repo", repo },
-                            {"dependencies",  dependencies.ToString()},
+                            {"deps",  deps.ToString()},
                             {"strict", strict.ToString() }
                         });
                 }
 
+                string modelFileText = File.ReadAllText(modelFile.FullName);
                 Parsing parsing = new Parsing(repo, logger);
+
                 try
                 {
-                    await parsing.IsValidDtdlFileAsync(modelFile, strict, resolutionOption: dependencies);
+                    Outputs.WriteOut("- Validating model conforms to DTDL...");
+                    ModelParser parser = parsing.GetParser(resolutionOption: deps);
+                    await parser.ParseAsync(new string[] { modelFileText });
+                    Outputs.WriteOut($"Success{Environment.NewLine}");
                 }
                 catch (ResolutionException resolutionEx)
                 {
-                    await Console.Error.WriteLineAsync(resolutionEx.Message);
+                    await Outputs.WriteErrorAsync(resolutionEx.Message);
+                    return ReturnCodes.ResolutionError;
+                }
+                catch (ResolverException resolverEx)
+                {
+                    await Outputs.WriteErrorAsync(resolverEx.Message);
                     return ReturnCodes.ResolutionError;
                 }
                 catch (ParsingException parsingEx)
@@ -199,18 +211,40 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                         normalizedErrors += $"{error.Message}{Environment.NewLine}";
                     }
 
-                    await Console.Error.WriteLineAsync(normalizedErrors);
+                    await Outputs.WriteErrorAsync(normalizedErrors);
                     return ReturnCodes.ParserError;
                 }
-                catch (ResolverException resolverEx)
+
+                if (strict)
                 {
-                    await Console.Error.WriteLineAsync(resolverEx.Message);
-                    return ReturnCodes.ResolutionError;
-                }
-                catch (ValidationException validationEx)
-                {
-                    await Console.Error.WriteLineAsync(validationEx.Message);
-                    return ReturnCodes.ValidationError;
+                    // TODO silent?
+                    Outputs.WriteOut("- Validating file path...");
+                    if (!Validations.ValidateFilePath(modelFile.FullName))
+                    {
+                        await Outputs.WriteErrorAsync($"File \"{modelFile.FullName}\" does not adhere to DMR naming conventions!");
+                        return ReturnCodes.ValidationError;
+                    }
+                    Outputs.WriteOut($"Success{Environment.NewLine}");
+
+                    Outputs.WriteOut("- Scanning DTMI's for reserved words...");
+                    List<string> invalidReservedIds = Validations.ScanIdsForReservedWords(modelFileText);
+                    if (invalidReservedIds.Count > 0)
+                    {
+                        await Outputs.WriteErrorAsync(
+                            $"Reserved words found in the following DTMI's:{Environment.NewLine}{string.Join($",{Environment.NewLine}", invalidReservedIds)}");
+                        return ReturnCodes.ValidationError;
+                    }
+                    Outputs.WriteOut($"Success{Environment.NewLine}");
+
+                    Outputs.WriteOut("- Ensuring DTMI's namespace conformance...");
+                    List<string> invalidSubDtmis = Validations.EnsureSubDtmiNamespace(modelFileText);
+                    if (invalidSubDtmis.Count > 0)
+                    {
+                        await Outputs.WriteErrorAsync(
+                            $"The following DTMI's do not start with the root DTMI namespace:{Environment.NewLine}{string.Join($",{Environment.NewLine}", invalidReservedIds)}");
+                        return ReturnCodes.ValidationError;
+                    }
+                    Outputs.WriteOut($"Success{Environment.NewLine}");
                 }
 
                 return ReturnCodes.Success;
@@ -230,6 +264,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                 CommonOptions.LocalRepo,
                 CommonOptions.Silent
             };
+            addModel.IsHidden = true;
             addModel.Description = "Adds a model to a local repository. " +
                 "Validates Id's, dependencies and places model content in the proper location.";
             addModel.Handler = CommandHandler.Create<FileInfo, DirectoryInfo, bool, IHost>(
@@ -255,6 +290,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                 Parsing parsing = new Parsing(localRepo.FullName, logger);
                 try
                 {
+                    /*
                     var newModels = await ModelImporter.ImportModels(modelFile, localRepo, logger);
                     foreach (var model in newModels)
                     {
@@ -263,6 +299,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                         if (!validationResult)
                             returnCode = ReturnCodes.ValidationError;
                     }
+                    */
                 }
                 catch (ResolverException resolverEx)
                 {
@@ -280,11 +317,6 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 
                     await Console.Error.WriteLineAsync(normalizedErrors);
                     return ReturnCodes.ParserError;
-                }
-                catch (ValidationException validationEx)
-                {
-                    await Console.Error.WriteLineAsync(validationEx.Message);
-                    return ReturnCodes.ValidationError;
                 }
                 catch (IOException ioEx)
                 {

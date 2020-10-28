@@ -21,7 +21,7 @@ namespace Azure.IoT.DeviceModelsRepository.Validation.Tests
                     }
                 ]
             }";
-            Assert.True(Validations.ScanForReservedWords(doc));
+            //Assert.True(Validations.ScanIdsForReservedWords(doc));
 
         }
 
@@ -42,7 +42,7 @@ namespace Azure.IoT.DeviceModelsRepository.Validation.Tests
                     }
                 ]
             }";
-            Assert.True(Validations.ScanForReservedWords(doc));
+            //Assert.True(Validations.ScanIdsForReservedWords(doc));
         }
 
         [Test]
@@ -61,7 +61,7 @@ namespace Azure.IoT.DeviceModelsRepository.Validation.Tests
                     }
                 ]
             }";
-            Assert.False(Validations.ScanForReservedWords(doc));
+            //Assert.False(Validations.ScanIdsForReservedWords(doc));
         }
 
         [Test]
@@ -81,7 +81,7 @@ namespace Azure.IoT.DeviceModelsRepository.Validation.Tests
                     }
                 ]
             }";
-            Assert.False(Validations.ScanForReservedWords(doc));
+            //Assert.False(Validations.ScanIdsForReservedWords(doc));
         }
 
         [Test]
@@ -100,7 +100,7 @@ namespace Azure.IoT.DeviceModelsRepository.Validation.Tests
                     }
                 ]
             }";
-            Assert.False(Validations.ScanForReservedWords(doc));
+            //Assert.False(Validations.ScanIdsForReservedWords(doc));
         }
 
         [Test]
@@ -120,7 +120,7 @@ namespace Azure.IoT.DeviceModelsRepository.Validation.Tests
                     }
                 ]
             }";
-            Assert.False(Validations.ScanForReservedWords(doc));
+            //Assert.False(Validations.ScanIdsForReservedWords(doc));
         }
 
     }
