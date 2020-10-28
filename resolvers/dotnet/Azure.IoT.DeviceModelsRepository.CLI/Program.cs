@@ -190,7 +190,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                     Outputs.WriteOut("- Validating model conforms to DTDL...");
                     ModelParser parser = parsing.GetParser(resolutionOption: deps);
                     await parser.ParseAsync(new string[] { modelFileText });
-                    Outputs.WriteOut($"Success{Environment.NewLine}");
+                    Outputs.WriteOut($"Success{Environment.NewLine}", ConsoleColor.Green);
                 }
                 catch (ResolutionException resolutionEx)
                 {
@@ -224,7 +224,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                         await Outputs.WriteErrorAsync($"File \"{modelFile.FullName}\" does not adhere to DMR naming conventions!");
                         return ReturnCodes.ValidationError;
                     }
-                    Outputs.WriteOut($"Success{Environment.NewLine}");
+                    Outputs.WriteOut($"Success{Environment.NewLine}", ConsoleColor.Green);
 
                     Outputs.WriteOut("- Scanning DTMI's for reserved words...");
                     List<string> invalidReservedIds = Validations.ScanIdsForReservedWords(modelFileText);
@@ -234,7 +234,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                             $"Reserved words found in the following DTMI's:{Environment.NewLine}{string.Join($",{Environment.NewLine}", invalidReservedIds)}");
                         return ReturnCodes.ValidationError;
                     }
-                    Outputs.WriteOut($"Success{Environment.NewLine}");
+                    Outputs.WriteOut($"Success{Environment.NewLine}", ConsoleColor.Green);
 
                     Outputs.WriteOut("- Ensuring DTMI's namespace conformance...");
                     List<string> invalidSubDtmis = Validations.EnsureSubDtmiNamespace(modelFileText);
@@ -244,7 +244,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                             $"The following DTMI's do not start with the root DTMI namespace:{Environment.NewLine}{string.Join($",{Environment.NewLine}", invalidReservedIds)}");
                         return ReturnCodes.ValidationError;
                     }
-                    Outputs.WriteOut($"Success{Environment.NewLine}");
+                    Outputs.WriteOut($"Success{Environment.NewLine}", ConsoleColor.Green);
                 }
 
                 return ReturnCodes.Success;

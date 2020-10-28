@@ -27,9 +27,19 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             Console.ResetColor();
         }
 
-        public static void WriteOut(string content)
+        public static void WriteOut(string content, ConsoleColor? color=null)
         {
+            if (color.HasValue)
+            {
+                Console.ForegroundColor = color.Value;
+            }
+
             Console.Out.Write(content);
+
+            if (color.HasValue)
+            {
+                Console.ResetColor();
+            }
         }
 
         public async static Task WriteInputsAsync(string command, Dictionary<string, string> inputs)
