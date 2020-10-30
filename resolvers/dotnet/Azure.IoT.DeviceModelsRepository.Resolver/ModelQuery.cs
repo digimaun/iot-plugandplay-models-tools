@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Azure.IoT.DeviceModelsRepository.Resolver
 {
-    public class ModelQuery
+    internal class ModelQuery
     {
         readonly string _content;
         readonly JsonDocumentOptions _parseOptions;

@@ -110,7 +110,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                 {
                     if (string.IsNullOrWhiteSpace(dtmi))
                     {
-                        dtmi = parsing.GetModelMetadata(modelFile).Id;
+                        dtmi = Parsing.GetRootId(modelFile);
                         if (string.IsNullOrWhiteSpace(dtmi))
                         {
                             await Outputs.WriteErrorAsync("Model is missing root @id");
@@ -163,7 +163,6 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                 CommonOptions.Repo,
                 CommonOptions.Deps,
                 CommonOptions.Strict,
-                CommonOptions.Silent
             };
 
             validateModelCommand.Description =
@@ -192,7 +191,6 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                     Outputs.WriteOut("- Validating model conforms to DTDL...");
                     ModelParser parser = parsing.GetParser(resolutionOption: deps);
                     await parser.ParseAsync(new string[] { modelFileText });
-                    Outputs.WriteOut($"Success{Environment.NewLine}", ConsoleColor.Green);
                 }
                 catch (ResolutionException resolutionEx)
                 {
@@ -231,7 +229,6 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                         await Outputs.WriteErrorAsync($"File \"{modelFile.FullName}\" does not adhere to DMR naming conventions.");
                         return ReturnCodes.ValidationError;
                     }
-                    Outputs.WriteOut($"Success{Environment.NewLine}", ConsoleColor.Green);
 
                     // TODO extract/DRY
                     Outputs.WriteOut("- Ensuring DTMIs namespace conformance...");
@@ -242,7 +239,6 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                             $"The following DTMI's do not start with the root DTMI namespace:{Environment.NewLine}{string.Join($",{Environment.NewLine}", invalidSubDtmis)}");
                         return ReturnCodes.ValidationError;
                     }
-                    Outputs.WriteOut($"Success{Environment.NewLine}", ConsoleColor.Green);
                 }
 
                 return ReturnCodes.Success;
@@ -292,15 +288,15 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                 {
                     ModelParser parser = parsing.GetParser(resolutionOption: deps);
                     List<string> models = parsing.ExtractModels(modelFile);
-                    foreach (string content in models)
-                    {
-                        Outputs.WriteOut("- Validating model conforms to DTDL...");
-                        await parser.ParseAsync(new string[] { content });
-                        Outputs.WriteOut($"Success{Environment.NewLine}", ConsoleColor.Green);
 
-                        if (strict)
+                    Outputs.WriteOut($"- Validating models conform to DTDL...");
+                    await parser.ParseAsync(models);
+
+                    if (strict) {
+                        foreach (string content in models)
                         {
-                            Outputs.WriteOut("- Ensuring DTMIs namespace conformance...");
+                            string id = Parsing.GetRootId(content);
+                            Outputs.WriteOut($"- Ensuring DTMIs namespace conformance for model \"{id}\"...");
                             List<string> invalidSubDtmis = Validations.EnsureSubDtmiNamespace(content);
                             if (invalidSubDtmis.Count > 0)
                             {
@@ -308,12 +304,12 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                                     $"The following DTMI's do not start with the root DTMI namespace:{Environment.NewLine}{string.Join($",{Environment.NewLine}", invalidSubDtmis)}");
                                 return ReturnCodes.ValidationError;
                             }
-                            Outputs.WriteOut($"Success{Environment.NewLine}", ConsoleColor.Green);
                         }
+                    }
 
-                        Outputs.WriteOut("- Importing model...");
+                    foreach (string content in models)
+                    {
                         ModelImporter.Import(content, localRepo);
-                        Outputs.WriteOut($"Success{Environment.NewLine}", ConsoleColor.Green);
                     }
                 }
                 catch (ResolutionException resolutionEx)
