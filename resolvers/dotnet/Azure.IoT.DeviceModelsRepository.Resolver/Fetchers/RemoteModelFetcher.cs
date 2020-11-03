@@ -1,10 +1,8 @@
 ﻿using Azure.Core;
 using Azure.Core.Pipeline;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,13 +11,13 @@ namespace Azure.IoT.DeviceModelsRepository.Resolver.Fetchers
 {
     public class RemoteModelFetcher : IModelFetcher
     {
-        private readonly ILogger _logger;
+        private readonly AzureCoreEventSource _logger;
         private readonly HttpPipeline _pipeline;
         private readonly bool _tryExpanded;
 
-        public RemoteModelFetcher(ILogger logger, ResolverClientOptions clientOptions)
+        public RemoteModelFetcher(ResolverClientOptions clientOptions)
         {
-            _logger = logger;
+            _logger = AzureCoreEventSource.Shared;
             _pipeline = CreatePipeline(clientOptions);
             _tryExpanded = clientOptions.DependencyResolution == DependencyResolutionOption.TryFromExpanded;
         }
@@ -42,7 +40,7 @@ namespace Azure.IoT.DeviceModelsRepository.Resolver.Fetchers
             while (work.Count != 0 && !cancellationToken.IsCancellationRequested)
             {
                 string tryContentPath = work.Dequeue();
-                _logger.LogTrace(StandardStrings.FetchingContent(tryContentPath));
+                //_logger.LogTrace(StandardStrings.FetchingContent(tryContentPath));
 
                 string content = await EvaluatePathAsync(tryContentPath, cancellationToken);
                 if (!string.IsNullOrEmpty(content))
@@ -55,7 +53,7 @@ namespace Azure.IoT.DeviceModelsRepository.Resolver.Fetchers
                 }
 
                 remoteFetchError = StandardStrings.ErrorAccessRemoteRepositoryModel(tryContentPath);
-                _logger.LogWarning(remoteFetchError);
+                //_logger.LogWarning(remoteFetchError);
             }
 
             throw new RequestFailedException(remoteFetchError);

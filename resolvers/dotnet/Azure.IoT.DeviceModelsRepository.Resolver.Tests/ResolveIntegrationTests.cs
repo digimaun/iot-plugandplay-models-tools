@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -8,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Azure.IoT.DeviceModelsRepository.Resolver.Tests
 {
+    /*
     public class ResolveIntegrationTests
     {
         // TODO: Needs consistent remote repo
@@ -296,4 +296,5 @@ namespace Azure.IoT.DeviceModelsRepository.Resolver.Tests
             }
         }
     }
+    */
 }

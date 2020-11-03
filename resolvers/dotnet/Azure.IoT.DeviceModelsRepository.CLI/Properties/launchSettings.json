@@ -10,7 +10,7 @@
     },
     "Azure.IoT.DeviceModelsRepository.CLI.SmokeTests.ResolveLocal": {
       "commandName": "Project",
-      "commandLineArgs": "export --dtmi dtmi:com:example:Thermostat;1 --repository ../../../../Azure.IoT.DeviceModelsRepository.Resolver.Tests/TestModelRepo/"
+      "commandLineArgs": "export --dtmi dtmi:com:example:Thermostat;1 --repo ../../../../Azure.IoT.DeviceModelsRepository.Resolver.Tests/TestModelRepo/"
     },
     "Azure.IoT.DeviceModelsRepository.CLI.SmokeTests.ResolveBasicSilent": {
       "commandName": "Project",
@@ -30,11 +30,11 @@
     },
     "Azure.IoT.DeviceModelsRepository.CLI.SmokeTests.ResolveFromFile": {
       "commandName": "Project",
-      "commandLineArgs": "export --model-file ../../../../Azure.IoT.DeviceModelsRepository.Resolver.Tests/TestModelRepo/dtmi/com/example/temperaturecontroller-1.json --repository ../../../../Azure.IoT.DeviceModelsRepository.Resolver.Tests/TestModelRepo/ -o mytestmodel.expanded.json"
+      "commandLineArgs": "export --model-file ../../../../Azure.IoT.DeviceModelsRepository.Resolver.Tests/TestModelRepo/dtmi/com/example/temperaturecontroller-1.json --repo ../../../../Azure.IoT.DeviceModelsRepository.Resolver.Tests/TestModelRepo/ -o mytestmodel.expanded.json"
     },
     "Azure.IoT.DeviceModelsRepository.CLI.SmokeTests.ResolveFromFileFail": {
       "commandName": "Project",
-      "commandLineArgs": "export --repository ../../../../Azure.IoT.DeviceModelsRepository.Resolver.Tests/TestModelRepo/ -o mytestmodel.expanded.json"
+      "commandLineArgs": "export --repo ../../../../Azure.IoT.DeviceModelsRepository.Resolver.Tests/TestModelRepo/ -o mytestmodel.expanded.json"
     },
     "Azure.IoT.DeviceModelsRepository.CLI.SmokeTests.ValidateBasic": {
       "commandName": "Project",

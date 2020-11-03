@@ -1,12 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
-using Moq;
+﻿using Moq;
 using System;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Azure.IoT.DeviceModelsRepository.Resolver.Tests
 {
     public static class MockExtensions
     {
+        /*
         public static void ValidateLog(this Mock<ILogger> mockLogger, string message, LogLevel level, Times times)
         {
             mockLogger.Verify(l =>
@@ -16,5 +15,6 @@ namespace Azure.IoT.DeviceModelsRepository.Resolver.Tests
                       It.IsAny<Exception>(),
                       It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), times);
         }
+        */
     }
 }

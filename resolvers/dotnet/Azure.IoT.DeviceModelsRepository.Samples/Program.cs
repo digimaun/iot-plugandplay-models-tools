@@ -10,12 +10,14 @@ namespace Azure.IoT.DeviceModelsRepository.Samples
 {
     class Program
     {
-        static async Task Main(string[] args)
+
+        static void Main(string[] args)
         {
-            await ResolveAndParse();
-            await ParseAndResolve();
+            //await ResolveAndParse();
+            //await ParseAndResolve();
         }
 
+        /*
         private static async Task ResolveAndParse()
         {
             string dtmi = "dtmi:com:example:TemperatureController;1";
@@ -38,5 +40,6 @@ namespace Azure.IoT.DeviceModelsRepository.Samples
             var parseResult = await parser.ParseAsync(models.Values.Take(1).ToArray());
             Console.WriteLine($"{dtmi} resolved in {models.Count} interfaces with {parseResult.Count} entities.");
         }
+        */
     }
 }

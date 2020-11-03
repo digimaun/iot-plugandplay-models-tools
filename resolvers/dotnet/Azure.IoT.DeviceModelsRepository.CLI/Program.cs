@@ -1,7 +1,6 @@
-﻿using Azure.IoT.DeviceModelsRepository.Resolver;
+﻿using Azure.Core.Diagnostics;
+using Azure.IoT.DeviceModelsRepository.Resolver;
 using Microsoft.Azure.DigitalTwins.Parser;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
@@ -29,7 +28,12 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             public const int ImportError = 5;
         }
 
-        static async Task<int> Main(string[] args) => await GetCommandLine().UseDefaults().Build().InvokeAsync(args);
+        static async Task<int> Main(string[] args)
+        {
+            using AzureEventSourceListener listener = 
+                AzureEventSourceListener.CreateConsoleLogger(System.Diagnostics.Tracing.EventLevel.Error);
+            return await GetCommandLine().UseDefaults().Build().InvokeAsync(args);
+        }
 
         private static CommandLineBuilder GetCommandLine()
         {
@@ -47,6 +51,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             return new CommandLineBuilder(root);
         }
 
+        /*
         private static ILogger GetLogger(bool debug)
         {
             if (!debug)
@@ -59,6 +64,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 
             return loggerFactory.CreateLogger<Program>();
         }
+        */
 
         private static Command BuildExportCommand()
         {
@@ -80,7 +86,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             exportModelCommand.Handler = CommandHandler.Create<string, string, string, bool, FileInfo, DependencyResolutionOption, bool>(
                 async (dtmi, repo, output, silent, modelFile, deps, debug) =>
             {
-                ILogger logger = GetLogger(debug);
+                //ILogger logger = GetLogger(debug);
 
                 if (!silent)
                 {
@@ -105,7 +111,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                     return ReturnCodes.InvalidArguments;
                 }
 
-                Parsing parsing = new Parsing(repo, logger);
+                Parsing parsing = new Parsing(repo);
                 try
                 {
                     if (string.IsNullOrWhiteSpace(dtmi))
@@ -142,7 +148,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 
                 if (!string.IsNullOrEmpty(output))
                 {
-                    logger.LogTrace($"Writing result to file '{output}'");
+                    //logger.LogTrace($"Writing result to file '{output}'");
                     UTF8Encoding utf8WithoutBom = new UTF8Encoding(false);
                     await File.WriteAllTextAsync(output, jsonSerialized, utf8WithoutBom);
                 }
@@ -171,7 +177,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             validateModelCommand.Handler = CommandHandler.Create<FileInfo, string, bool, bool, DependencyResolutionOption, bool>(
                 async (modelFile, repo, silent, strict, deps, debug) =>
             {
-                ILogger logger = GetLogger(debug);
+                //ILogger logger = GetLogger(debug);
                 if (!silent)
                 {
                     await Outputs.WriteHeadersAsync();
@@ -184,7 +190,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                         });
                 }
 
-                Parsing parsing = new Parsing(repo, logger);
+                Parsing parsing = new Parsing(repo);
                 string modelFileText;
                 try
                 {
@@ -265,7 +271,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             importModelCommand.Handler = CommandHandler.Create<FileInfo, DirectoryInfo, DependencyResolutionOption, bool, bool, bool>(
                 async (modelFile, localRepo, deps, silent, strict, debug) =>
             {
-                ILogger logger = GetLogger(debug);
+                //ILogger logger = GetLogger(debug);
                 if (localRepo == null)
                 {
                     localRepo = new DirectoryInfo(Path.GetFullPath("."));
@@ -283,7 +289,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                         });
                 }
 
-                Parsing parsing = new Parsing(localRepo.FullName, logger);
+                Parsing parsing = new Parsing(localRepo.FullName);
 
                 try
                 {
