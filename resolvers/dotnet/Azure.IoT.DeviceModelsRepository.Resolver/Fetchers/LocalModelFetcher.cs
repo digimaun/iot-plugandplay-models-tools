@@ -9,12 +9,10 @@ namespace Azure.IoT.DeviceModelsRepository.Resolver.Fetchers
 {
     public class LocalModelFetcher : IModelFetcher
     {
-        private readonly AzureCoreEventSource _logger;
         private readonly bool _tryExpanded;
 
         public LocalModelFetcher(ResolverClientOptions clientOptions)
         {
-            _logger = AzureCoreEventSource.Shared;
             _tryExpanded = clientOptions.DependencyResolution == DependencyResolutionOption.TryFromExpanded;
         }
 
@@ -25,15 +23,6 @@ namespace Azure.IoT.DeviceModelsRepository.Resolver.Fetchers
 
         public FetchResult Fetch(string dtmi, Uri repositoryUri, CancellationToken cancellationToken = default)
         {
-            string registryPath = repositoryUri.AbsolutePath;
-
-            if (!Directory.Exists(registryPath))
-            {
-                string dnfError = StandardStrings.ErrorAccessLocalRepository(registryPath);
-                //_logger.LogError(dnfError);
-                throw new DirectoryNotFoundException(dnfError);
-            }
-
             Queue<string> work = new Queue<string>();
 
             if (_tryExpanded)
@@ -45,8 +34,7 @@ namespace Azure.IoT.DeviceModelsRepository.Resolver.Fetchers
             while (work.Count != 0 && !cancellationToken.IsCancellationRequested)
             {
                 string tryContentPath = work.Dequeue();
-                //_logger.LogTrace(StandardStrings.FetchingContent(tryContentPath));
-                _logger.MessageSent(StandardStrings.FetchingContent(tryContentPath));
+                ResolverEventSource.Shared.FetchingModelContent(tryContentPath);
 
                 if (EvaluatePath(tryContentPath))
                 {
@@ -57,14 +45,14 @@ namespace Azure.IoT.DeviceModelsRepository.Resolver.Fetchers
                     };
                 }
 
-                fnfError = StandardStrings.ErrorAccessLocalRepositoryModel(tryContentPath);
-                //_logger.LogWarning(fnfError);
+                ResolverEventSource.Shared.ErrorFetchingModelContent(tryContentPath);
+                fnfError = string.Format(StandardStrings.ErrorFetchingModelContent, tryContentPath);
             }
 
             throw new FileNotFoundException(fnfError);
         }
 
-        public string GetPath(string dtmi, Uri repositoryUri, bool expanded = false)
+        private string GetPath(string dtmi, Uri repositoryUri, bool expanded = false)
         {
             string registryPath = repositoryUri.AbsolutePath;
             return DtmiConventions.DtmiToQualifiedPath(dtmi, registryPath, expanded);

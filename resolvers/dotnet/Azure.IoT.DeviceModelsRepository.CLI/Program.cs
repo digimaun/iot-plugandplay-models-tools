@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Diagnostics.Tracing;
 
 namespace Azure.IoT.DeviceModelsRepository.CLI
 {
@@ -28,12 +29,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             public const int ImportError = 5;
         }
 
-        static async Task<int> Main(string[] args)
-        {
-            using AzureEventSourceListener listener = 
-                AzureEventSourceListener.CreateConsoleLogger(System.Diagnostics.Tracing.EventLevel.Error);
-            return await GetCommandLine().UseDefaults().Build().InvokeAsync(args);
-        }
+        static async Task<int> Main(string[] args) => await GetCommandLine().UseDefaults().Build().InvokeAsync(args);
 
         private static CommandLineBuilder GetCommandLine()
         {
@@ -48,23 +44,31 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 
             root.AddGlobalOption(CommonOptions.Debug);
 
-            return new CommandLineBuilder(root);
-        }
-
-        /*
-        private static ILogger GetLogger(bool debug)
-        {
-            if (!debug)
-                return NullLogger.Instance;
-
-            using ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            CommandLineBuilder builder = new CommandLineBuilder(root);
+            builder.UseMiddleware(async (context, next) =>
             {
-                builder.ClearProviders().SetMinimumLevel(LogLevel.Trace).AddConsole();
+                AzureEventSourceListener listener = null;
+                try
+                {
+                    if (context.ParseResult.Tokens.Any(x => x.Type == TokenType.Option && x.Value == "--debug"))
+                    {
+                        listener = AzureEventSourceListener.CreateConsoleLogger(EventLevel.Verbose);
+                    }
+
+                    await next(context);
+                }
+                finally
+                {
+                    if (listener != null)
+                    {
+                        listener.Dispose();
+                    }
+                }
+            
             });
 
-            return loggerFactory.CreateLogger<Program>();
+            return builder;
         }
-        */
 
         private static Command BuildExportCommand()
         {
@@ -86,8 +90,6 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             exportModelCommand.Handler = CommandHandler.Create<string, string, string, bool, FileInfo, DependencyResolutionOption, bool>(
                 async (dtmi, repo, output, silent, modelFile, deps, debug) =>
             {
-                //ILogger logger = GetLogger(debug);
-
                 if (!silent)
                 {
                     await Outputs.WriteHeadersAsync();
@@ -148,7 +150,6 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 
                 if (!string.IsNullOrEmpty(output))
                 {
-                    //logger.LogTrace($"Writing result to file '{output}'");
                     UTF8Encoding utf8WithoutBom = new UTF8Encoding(false);
                     await File.WriteAllTextAsync(output, jsonSerialized, utf8WithoutBom);
                 }
@@ -177,7 +178,6 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             validateModelCommand.Handler = CommandHandler.Create<FileInfo, string, bool, bool, DependencyResolutionOption, bool>(
                 async (modelFile, repo, silent, strict, deps, debug) =>
             {
-                //ILogger logger = GetLogger(debug);
                 if (!silent)
                 {
                     await Outputs.WriteHeadersAsync();
@@ -271,7 +271,6 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             importModelCommand.Handler = CommandHandler.Create<FileInfo, DirectoryInfo, DependencyResolutionOption, bool, bool, bool>(
                 async (modelFile, localRepo, deps, silent, strict, debug) =>
             {
-                //ILogger logger = GetLogger(debug);
                 if (localRepo == null)
                 {
                     localRepo = new DirectoryInfo(Path.GetFullPath("."));
