@@ -1,6 +1,5 @@
 ﻿using Azure.Core.Diagnostics;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 
 namespace Azure.IoT.DeviceModelsRepository.Resolver
