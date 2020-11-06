@@ -11,6 +11,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI.Tests
             Remote
         }
 
-        public static string TestLocalModelRepository => Path.GetFullPath(@"../../../../Azure.IoT.DeviceModelsRepository.Resolver.Tests/TestModelRepo");
+        public static string TestLocalModelRepository => 
+            Path.GetFullPath(@"../../../../Azure.IoT.DeviceModelsRepository.Resolver.Tests/TestModelRepo");
     }
 }

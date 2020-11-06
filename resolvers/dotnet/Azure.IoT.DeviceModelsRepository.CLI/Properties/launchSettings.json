@@ -42,7 +42,7 @@
     },
     "Azure.IoT.DeviceModelsRepository.CLI.SmokeTests.ValidateBasic": {
       "commandName": "Project",
-      "commandLineArgs": "validate --model-file ../../../../Azure.IoT.DeviceModelsRepository.Resolver.Tests/TestModelRepo/dtmi/com/example/thermostat-1.json"
+      "commandLineArgs": "validate --model-file ../../../../Azure.IoT.DeviceModelsRepository.Resolver.Tests/TestModelRepo/dtmi/strict/badfilepath-1.json --strict --repo C:\\Users\\paymaunh\\dev\\source\\superpnp\\device-models-tools\\resolvers\\dotnet\\Azure.IoT.DeviceModelsRepository.Resolver.Tests\\TestModelRepo\\"
     },
     "Azure.IoT.DeviceModelsRepository.CLI.SmokeTests.ValidateFail1": {
       "commandName": "Project",

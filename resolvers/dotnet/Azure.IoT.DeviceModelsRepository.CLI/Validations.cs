@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.RegularExpressions;
 using Azure.IoT.DeviceModelsRepository.Resolver;
 
@@ -7,15 +8,22 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 {
     public static class Validations
     {
-        public static bool IsValidDtmiPath(string fullPath)
+        public static string EnsureValidModelFilePath(FileInfo modelFile, string repository)
         {
-            var filePathRegex = new Regex("dtmi[\\\\\\/](?:_+[a-z0-9]|[a-z])(?:[a-z0-9_]*[a-z0-9])?(?:[\\\\\\/](?:_+[a-z0-9]|[a-z])(?:[a-z0-9_]*[a-z0-9])?)*-[1-9][0-9]{0,8}\\.json$");
+            if (IsRelativePath(repository))
+                repository = Path.GetFullPath(repository);
 
-            if (!filePathRegex.IsMatch(fullPath))
+            string rootId = new Parsing(null).GetRootId(modelFile);
+            string modelPath = DtmiConventions.DtmiToQualifiedPath(rootId, repository);
+            Uri targetModelPathUri = new Uri(modelPath);
+            Uri modelFilePathUri = new Uri(modelFile.FullName);
+
+            if (targetModelPathUri.AbsolutePath != modelFilePathUri.AbsolutePath)
             {
-                return false;
+                return targetModelPathUri.AbsolutePath;
             }
-            return true;
+
+            return null;
         }
 
         public static List<string> ScanIdsForReservedWords(string fileText)
@@ -67,6 +75,12 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
         {
             bool validUri = Uri.TryCreate(repositoryPath, UriKind.Relative, out Uri testUri);
             return validUri && testUri != null;
+        }
+
+        public static bool IsRemoteEndpoint(string repositoryPath)
+        {
+            bool validUri = Uri.TryCreate(repositoryPath, UriKind.Absolute, out Uri testUri);
+            return validUri && testUri != null && testUri.Scheme != "file";
         }
     }
 }

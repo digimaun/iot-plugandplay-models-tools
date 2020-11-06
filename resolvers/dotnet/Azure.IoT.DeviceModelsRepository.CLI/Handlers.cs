@@ -131,10 +131,26 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                         }
                     }
 
+                    // TODO: Evaluate changing how file path validation is invoked.
                     await Outputs.WriteOutAsync($"- Ensuring model file path adheres to DMR path conventions...");
-                    if (!Validations.IsValidDtmiPath(modelFile.FullName))
+                    if (Validations.IsRemoteEndpoint(repo))
                     {
-                        await Outputs.WriteErrorAsync($"File \"{modelFile.FullName}\" does not adhere to DMR path conventions.");
+                        await Outputs.WriteErrorAsync($"Model file path validation requires a local repository.");
+                        return ReturnCodes.ValidationError;
+                    }
+
+                    if (models.Count > 1)
+                    {
+                        await Outputs.WriteErrorAsync($"Model file path validation not yet supported for arrays.");
+                        return ReturnCodes.ValidationError;
+                    }
+
+                    string filePathError = Validations.EnsureValidModelFilePath(modelFile, repo);
+
+                    if (filePathError != null)
+                    {
+                        await Outputs.WriteErrorAsync(
+                            $"File \"{modelFile.FullName}\" does not adhere to DMR path conventions. Expecting \"{filePathError}\".");
                         return ReturnCodes.ValidationError;
                     }
                 }
