@@ -12,29 +12,30 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
         public static readonly string ParserVersion = typeof(ModelParser).Assembly.GetName().Version.ToString();
         public static readonly string ResolverVersion = typeof(ResolverClient).Assembly.GetName().Version.ToString();
         public static readonly string CliVersion = typeof(Program).Assembly.GetName().Version.ToString();
+        public static readonly string StandardHeader = $"dmr-client/{CliVersion} parser/{ParserVersion} resolver/{ResolverVersion}";
 
         public async static Task WriteErrorAsync(string msg)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            await Console.Error.WriteLineAsync($"{Environment.NewLine}{msg}");
+            await Console.Error.WriteLineAsync($"ERROR: {Environment.NewLine}{msg}");
             Console.ResetColor();
         }
 
-        public async static Task WriteHeadersAsync()
+        public async static Task WriteHeaderAsync()
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            await Console.Out.WriteLineAsync($"dmr-client/{CliVersion} parser/{ParserVersion} resolver/{ResolverVersion}");
+            await Console.Error.WriteLineAsync(StandardHeader);
             Console.ResetColor();
         }
 
-        public static void WriteOut(string content, ConsoleColor? color=null)
+        public async static Task WriteOutAsync(string content, ConsoleColor? color=null)
         {
             if (color.HasValue)
             {
                 Console.ForegroundColor = color.Value;
             }
 
-            Console.Out.Write($"{content}{Environment.NewLine}");
+            await Console.Out.WriteAsync($"{content}{Environment.NewLine}");
 
             if (color.HasValue)
             {
@@ -54,7 +55,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                     builder.Append($" --{item.Key} {item.Value}");
                 }
             }
-            await Console.Out.WriteLineAsync($"{builder}{Environment.NewLine}");
+            await Console.Error.WriteLineAsync($"{builder}{Environment.NewLine}");
             Console.ResetColor();
         }
     }

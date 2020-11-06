@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
-using Azure.IoT.DeviceModelsRepository.CLI;
 
-namespace Azure.IoT.DeviceModelsRepository.Validation.Tests
+namespace Azure.IoT.DeviceModelsRepository.CLI.Tests
 {
     public class IsValidDtmiPathTests
     {
