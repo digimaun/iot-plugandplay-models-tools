@@ -14,7 +14,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
     internal static class Handlers
     {
         // Alternative to enum to avoid casting.
-        static class ReturnCodes
+        public static class ReturnCodes
         {
             public const int Success = 0;
             public const int InvalidArguments = 1;

@@ -54,7 +54,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI.Tests
             (int returnCode, string standardOut, string standardError) = 
                 ClientInvokator.Invoke($"export --dtmi \"{dtmi}\" {targetRepo} {resolution}");
 
-            Assert.AreEqual(0, returnCode);
+            Assert.AreEqual(Handlers.ReturnCodes.Success, returnCode);
             Assert.True(!standardError.Contains("ERROR:"));
             Assert.True(standardError.Contains(Outputs.StandardHeader));
 
@@ -75,15 +75,42 @@ namespace Azure.IoT.DeviceModelsRepository.CLI.Tests
         public void ExportOutFile(string dtmi, string outfilePath)
         {
             string qualifiedPath = Path.GetFullPath(outfilePath);
-            (int returnCode, string standardOut, string standardError) =
-                ClientInvokator.Invoke($"export -o {qualifiedPath} --dtmi \"{dtmi}\" --repo \"{TestHelpers.TestLocalModelRepository}\"");
+            (int returnCode, _, string standardError) =
+                ClientInvokator.Invoke($"export -o \"{qualifiedPath}\" --dtmi \"{dtmi}\" --repo \"{TestHelpers.TestLocalModelRepository}\"");
             
-            Assert.AreEqual(0, returnCode);
+            Assert.AreEqual(Handlers.ReturnCodes.Success, returnCode);
             Assert.True(!standardError.Contains("ERROR:"));
             Parsing parsing = new Parsing(null);
             List<string> modelsResult = parsing.ExtractModels(new FileInfo(qualifiedPath));
             string targetId = parsing.GetRootId(modelsResult[0]);
             Assert.AreEqual(dtmi, targetId);
+        }
+
+        [TestCase("dtmi:com:example:Thermostat;")]
+        [TestCase("")]
+        public void ExportInvalidDtmiFormatWillError(string dtmi)
+        {
+            (int returnCode, _, string standardError) = ClientInvokator.Invoke($"export --dtmi \"{dtmi}\"");
+
+            Assert.AreEqual(Handlers.ReturnCodes.InvalidArguments, returnCode);
+            Assert.True(standardError.StartsWith("Invalid dtmi format"));
+        }
+
+        [TestCase("dtmi:com:example:Thermojax;999", TestHelpers.ClientType.Local)]
+        [TestCase("dtmi:com:example:Thermojax;999", TestHelpers.ClientType.Remote)]
+        public void ExportNonExistantDtmiWillError(string dtmi, TestHelpers.ClientType clientType)
+        {
+            string targetRepo = string.Empty;
+            if (clientType == TestHelpers.ClientType.Local)
+            {
+                targetRepo = $"--repo \"{TestHelpers.TestLocalModelRepository}\"";
+            }
+
+            (int returnCode, _, string standardError) =
+                ClientInvokator.Invoke($"export --dtmi \"{dtmi}\" {targetRepo}");
+
+            Assert.AreEqual(Handlers.ReturnCodes.ResolutionError, returnCode);
+            Assert.True(standardError.Contains("ERROR:"));
         }
     }
 }
