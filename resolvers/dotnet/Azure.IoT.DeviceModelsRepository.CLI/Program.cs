@@ -90,7 +90,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 
             validateModelCommand.Description =
                 "Validates a model using the DTDL model parser & resolver. The target repository is used for model resolution. ";
-            validateModelCommand.Handler = 
+            validateModelCommand.Handler =
                 CommandHandler.Create<FileInfo, string, bool, bool, DependencyResolutionOption>(Handlers.Validate);
 
             return validateModelCommand;

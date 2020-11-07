@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Azure.IoT.DeviceModelsRepository.CLI.Tests
 {
-    public class ExportIntegrationTests
+    public class CommandExportIntegrationTests
     {
         [TestCase(
             "dtmi:com:example:Thermostat;1",
@@ -51,7 +51,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI.Tests
                 resolution = $"--deps {resolution}";
             }
 
-            (int returnCode, string standardOut, string standardError) = 
+            (int returnCode, string standardOut, string standardError) =
                 ClientInvokator.Invoke($"export --dtmi \"{dtmi}\" {targetRepo} {resolution}");
 
             Assert.AreEqual(Handlers.ReturnCodes.Success, returnCode);
@@ -59,11 +59,12 @@ namespace Azure.IoT.DeviceModelsRepository.CLI.Tests
             Assert.True(standardError.Contains(Outputs.StandardHeader));
 
             Parsing parsing = new Parsing(null);
-            List<string> modelsResult = parsing.ExtractModels(standardOut);
+            FileExtractResult extractResult = parsing.ExtractModels(standardOut);
+            List<string> modelsResult = extractResult.Models;
 
             string[] expectedDtmis = $"{dtmi},{expectedDeps}".Split(",", StringSplitOptions.RemoveEmptyEntries);
             Assert.True(modelsResult.Count == expectedDtmis.Length);
-            
+
             foreach (string model in modelsResult)
             {
                 string targetId = parsing.GetRootId(model);
@@ -88,7 +89,8 @@ namespace Azure.IoT.DeviceModelsRepository.CLI.Tests
             Assert.True(standardError.Contains(Outputs.StandardHeader));
 
             Parsing parsing = new Parsing(null);
-            List<string> modelsResult = parsing.ExtractModels(standardOut);
+            FileExtractResult extractResult = parsing.ExtractModels(standardOut);
+            List<string> modelsResult = extractResult.Models;
 
             string[] expectedDtmis = expectedDeps.Split(",", StringSplitOptions.RemoveEmptyEntries);
             Assert.True(modelsResult.Count == expectedDtmis.Length);
@@ -106,11 +108,14 @@ namespace Azure.IoT.DeviceModelsRepository.CLI.Tests
             string qualifiedPath = Path.GetFullPath(outfilePath);
             (int returnCode, _, string standardError) =
                 ClientInvokator.Invoke($"export -o \"{qualifiedPath}\" --dtmi \"{dtmi}\" --repo \"{TestHelpers.TestLocalModelRepository}\"");
-            
+
             Assert.AreEqual(Handlers.ReturnCodes.Success, returnCode);
             Assert.False(standardError.Contains("ERROR:"));
+
             Parsing parsing = new Parsing(null);
-            List<string> modelsResult = parsing.ExtractModels(new FileInfo(qualifiedPath));
+            FileExtractResult extractResult = parsing.ExtractModels(new FileInfo(qualifiedPath));
+            List<string> modelsResult = extractResult.Models;
+
             string targetId = parsing.GetRootId(modelsResult[0]);
             Assert.AreEqual(dtmi, targetId);
         }
@@ -151,6 +156,16 @@ namespace Azure.IoT.DeviceModelsRepository.CLI.Tests
             Assert.AreEqual(Handlers.ReturnCodes.Success, returnCode);
             Assert.True(!standardError.Contains("ERROR:"));
             Assert.AreEqual(string.Empty, standardOut);
+        }
+
+        [TestCase("dtmi:strict:nonjson;1")]
+        public void ExportNonJsonContentWillError(string dtmi)
+        {
+            (int returnCode, _, string standardError) =
+                ClientInvokator.Invoke($"export --dtmi \"{dtmi}\" --repo \"{TestHelpers.TestLocalModelRepository}\"");
+
+            Assert.AreEqual(Handlers.ReturnCodes.InvalidArguments, returnCode);
+            Assert.True(standardError.Contains("ERROR: Parsing json-ld content."));
         }
     }
 }

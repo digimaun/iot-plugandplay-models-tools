@@ -57,7 +57,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                   description: "Local Model Repository path. If no path is provided the current working directory is used. ",
                   getDefaultValue: () => null)
                 {
-                    Argument = new Argument<DirectoryInfo>().ExistingOnly()
+                    Argument = new Argument<DirectoryInfo>()
                 };
             }
         }

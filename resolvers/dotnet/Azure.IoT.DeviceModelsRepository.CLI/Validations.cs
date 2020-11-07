@@ -8,19 +8,19 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
 {
     public static class Validations
     {
-        public static string EnsureValidModelFilePath(FileInfo modelFile, string repository)
+        public static string EnsureValidModelFilePath(string modelFilePath, string modelContent, string repository)
         {
             if (IsRelativePath(repository))
                 repository = Path.GetFullPath(repository);
 
-            string rootId = new Parsing(null).GetRootId(modelFile);
+            string rootId = new Parsing(null).GetRootId(modelContent);
             string modelPath = DtmiConventions.DtmiToQualifiedPath(rootId, repository);
             Uri targetModelPathUri = new Uri(modelPath);
-            Uri modelFilePathUri = new Uri(modelFile.FullName);
+            Uri modelFilePathUri = new Uri(modelFilePath);
 
             if (targetModelPathUri.AbsolutePath != modelFilePathUri.AbsolutePath)
             {
-                return targetModelPathUri.AbsolutePath;
+                return Path.GetFullPath(targetModelPathUri.AbsolutePath);
             }
 
             return null;

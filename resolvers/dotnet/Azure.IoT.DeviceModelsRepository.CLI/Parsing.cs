@@ -40,13 +40,13 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                 new ResolverClientOptions(resolutionOption));
         }
 
-        public List<string> ExtractModels(FileInfo modelsFile)
+        public FileExtractResult ExtractModels(FileInfo modelsFile)
         {
             string modelsText = File.ReadAllText(modelsFile.FullName);
             return ExtractModels(modelsText);
         }
 
-        public List<string> ExtractModels(string modelsText)
+        public FileExtractResult ExtractModels(string modelsText)
         {
             List<string> result = new List<string>();
             using JsonDocument document = JsonDocument.Parse(modelsText);
@@ -55,7 +55,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             if (root.ValueKind == JsonValueKind.Object)
             {
                 result.Add(root.GetRawText());
-                return result;
+                return new FileExtractResult(result, root.ValueKind);
             }
             if (root.ValueKind == JsonValueKind.Array)
             {
@@ -63,7 +63,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                 {
                     result.Add(element.GetRawText());
                 }
-                return result;
+                return new FileExtractResult(result, root.ValueKind);
             }
 
             throw new ArgumentException($"Importing model file contents of kind {root.ValueKind} is not yet supported.");

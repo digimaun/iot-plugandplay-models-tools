@@ -62,31 +62,36 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                 }
 
                 result = await parsing.GetResolver(resolutionOption: deps).ResolveAsync(dtmi);
+
+                List<string> resultList = result.Values.ToList();
+                string normalizedList = string.Join(',', resultList);
+                string payload = $"[{normalizedList}]";
+
+                using JsonDocument document = JsonDocument.Parse(payload, CommonOptions.DefaultJsonParseOptions);
+                using MemoryStream stream = new MemoryStream();
+                await JsonSerializer.SerializeAsync(stream, document.RootElement, CommonOptions.DefaultJsonSerializerOptions);
+                stream.Position = 0;
+                using StreamReader streamReader = new StreamReader(stream);
+                string jsonSerialized = await streamReader.ReadToEndAsync();
+
+                if (!silent)
+                    await Outputs.WriteOutAsync(jsonSerialized);
+
+                if (!string.IsNullOrEmpty(output))
+                {
+                    UTF8Encoding utf8WithoutBom = new UTF8Encoding(false);
+                    await File.WriteAllTextAsync(output, jsonSerialized, utf8WithoutBom);
+                }
             }
             catch (ResolverException resolverEx)
             {
                 await Outputs.WriteErrorAsync(resolverEx.Message);
                 return ReturnCodes.ResolutionError;
             }
-
-            List<string> resultList = result.Values.ToList();
-            string normalizedList = string.Join(',', resultList);
-            string payload = $"[{normalizedList}]";
-
-            using JsonDocument document = JsonDocument.Parse(payload, CommonOptions.DefaultJsonParseOptions);
-            using MemoryStream stream = new MemoryStream();
-            await JsonSerializer.SerializeAsync(stream, document.RootElement, CommonOptions.DefaultJsonSerializerOptions);
-            stream.Position = 0;
-            using StreamReader streamReader = new StreamReader(stream);
-            string jsonSerialized = await streamReader.ReadToEndAsync();
-
-            if (!silent)
-                await Outputs.WriteOutAsync(jsonSerialized);
-
-            if (!string.IsNullOrEmpty(output))
+            catch (System.Text.Json.JsonException jsonEx)
             {
-                UTF8Encoding utf8WithoutBom = new UTF8Encoding(false);
-                await File.WriteAllTextAsync(output, jsonSerialized, utf8WithoutBom);
+                await Outputs.WriteErrorAsync($"Parsing json-ld content. Details: {jsonEx.Message}");
+                return ReturnCodes.InvalidArguments;
             }
 
             return ReturnCodes.Success;
@@ -111,41 +116,46 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             try
             {
                 ModelParser parser = parsing.GetParser(resolutionOption: deps);
-                List<string> models = parsing.ExtractModels(modelFile);
+                FileExtractResult extractResult = parsing.ExtractModels(modelFile);
+                List<string> models = extractResult.Models;
+
+                if (models.Count == 0)
+                {
+                    await Outputs.WriteErrorAsync("No models to validate.");
+                    return ReturnCodes.ValidationError;
+                }
 
                 await Outputs.WriteOutAsync($"- Validating models conform to DTDL...");
                 await parser.ParseAsync(models);
 
                 if (strict)
                 {
-                    foreach (string content in models)
+                    if (extractResult.ContentKind == JsonValueKind.Array || models.Count > 1)
                     {
-                        string id = parsing.GetRootId(content);
-                        await Outputs.WriteOutAsync($"- Ensuring DTMIs namespace conformance for model \"{id}\"...");
-                        List<string> invalidSubDtmis = Validations.EnsureSubDtmiNamespace(content);
-                        if (invalidSubDtmis.Count > 0)
-                        {
-                            await Outputs.WriteErrorAsync(
-                                $"The following DTMI's do not start with the root DTMI namespace:{Environment.NewLine}{string.Join($",{Environment.NewLine}", invalidSubDtmis)}");
-                            return ReturnCodes.ValidationError;
-                        }
+                        // Related to file path validation.
+                        await Outputs.WriteErrorAsync("Strict validation requires a single root model object.");
+                        return ReturnCodes.ValidationError;
+                    }
+
+                    string id = parsing.GetRootId(models[0]);
+                    await Outputs.WriteOutAsync($"- Ensuring DTMIs namespace conformance for model \"{id}\"...");
+                    List<string> invalidSubDtmis = Validations.EnsureSubDtmiNamespace(models[0]);
+                    if (invalidSubDtmis.Count > 0)
+                    {
+                        await Outputs.WriteErrorAsync(
+                            $"The following DTMI's do not start with the root DTMI namespace:{Environment.NewLine}{string.Join($",{Environment.NewLine}", invalidSubDtmis)}");
+                        return ReturnCodes.ValidationError;
                     }
 
                     // TODO: Evaluate changing how file path validation is invoked.
-                    await Outputs.WriteOutAsync($"- Ensuring model file path adheres to DMR path conventions...");
                     if (Validations.IsRemoteEndpoint(repo))
                     {
                         await Outputs.WriteErrorAsync($"Model file path validation requires a local repository.");
                         return ReturnCodes.ValidationError;
                     }
 
-                    if (models.Count > 1)
-                    {
-                        await Outputs.WriteErrorAsync($"Model file path validation not yet supported for arrays.");
-                        return ReturnCodes.ValidationError;
-                    }
-
-                    string filePathError = Validations.EnsureValidModelFilePath(modelFile, repo);
+                    await Outputs.WriteOutAsync($"- Ensuring model file path adheres to DMR path conventions...");
+                    string filePathError = Validations.EnsureValidModelFilePath(modelFile.FullName, models[0], repo);
 
                     if (filePathError != null)
                     {
@@ -189,7 +199,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             }
             catch (System.Text.Json.JsonException jsonEx)
             {
-                await Outputs.WriteErrorAsync(jsonEx.Message);
+                await Outputs.WriteErrorAsync($"Parsing json-ld content. Details: {jsonEx.Message}");
                 return ReturnCodes.InvalidArguments;
             }
 
@@ -220,7 +230,14 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             try
             {
                 ModelParser parser = parsing.GetParser(resolutionOption: deps);
-                List<string> models = parsing.ExtractModels(modelFile);
+                FileExtractResult extractResult = parsing.ExtractModels(modelFile);
+                List<string> models = extractResult.Models;
+
+                if (models.Count == 0)
+                {
+                    await Outputs.WriteErrorAsync("No models to import.");
+                    return ReturnCodes.ValidationError;
+                }
 
                 await Outputs.WriteOutAsync($"- Validating models conform to DTDL...");
                 await parser.ParseAsync(models);
@@ -280,7 +297,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             }
             catch (System.Text.Json.JsonException jsonEx)
             {
-                await Outputs.WriteErrorAsync(jsonEx.Message);
+                await Outputs.WriteErrorAsync($"Parsing json-ld content. Details: {jsonEx.Message}");
                 return ReturnCodes.InvalidArguments;
             }
 
