@@ -166,8 +166,8 @@ namespace Azure.IoT.DeviceModelsRepository.CLI.Tests
             Assert.True(standardError.Contains("ERROR: Model file path validation requires a local repository."));
         }
 
-        [TestCase("dtmi/strict/nonjson-1.json")]
-        public void ValidateModelFileErrorNonJsonContent(string modelFilePath)
+        [TestCase("dtmi/strict/nondtdl-1.json")]
+        public void ValidateModelFileErrorNonDtdlContent(string modelFilePath)
         {
             string qualifiedModelFilePath = Path.Combine(TestHelpers.TestLocalModelRepository, modelFilePath);
 
@@ -177,7 +177,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI.Tests
                 $"--repo \"{TestHelpers.TestLocalModelRepository}\"");
 
             Assert.AreEqual(Handlers.ReturnCodes.InvalidArguments, returnCode);
-            Assert.True(standardError.Contains("ERROR: Parsing json-ld content."));
+            Assert.True(standardError.Contains("ERROR: Importing model file contents of kind String is not yet supported."));
         }
 
         [TestCase("dtmi/strict/emptyarray-1.json")]
@@ -192,6 +192,21 @@ namespace Azure.IoT.DeviceModelsRepository.CLI.Tests
 
             Assert.AreEqual(Handlers.ReturnCodes.ValidationError, returnCode);
             Assert.True(standardError.Contains("ERROR: No models to validate."));
+        }
+
+        [TestCase("dtmi/com/example/thermostat-1.json")]
+        public void ValidateModelFileSilentNoStandardOut(string modelFilePath)
+        {
+            string qualifiedModelFilePath = Path.Combine(TestHelpers.TestLocalModelRepository, modelFilePath);
+
+            (int returnCode, string standardOut, string standardError) =
+                ClientInvokator.Invoke($"" +
+                $"validate --silent --model-file \"{qualifiedModelFilePath}\" " +
+                $"--repo \"{TestHelpers.TestLocalModelRepository}\"");
+
+            Assert.AreEqual(Handlers.ReturnCodes.Success, returnCode);
+            Assert.True(!standardError.Contains("ERROR:"));
+            Assert.AreEqual(string.Empty, standardOut);
         }
     }
 }

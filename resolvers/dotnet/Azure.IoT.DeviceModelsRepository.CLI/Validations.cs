@@ -14,7 +14,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                 repository = Path.GetFullPath(repository);
 
             string rootId = new Parsing(null).GetRootId(modelContent);
-            string modelPath = DtmiConventions.DtmiToQualifiedPath(rootId, repository);
+            string modelPath = Path.GetFullPath(DtmiConventions.DtmiToQualifiedPath(rootId, repository));
             Uri targetModelPathUri = new Uri(modelPath);
             Uri modelFilePathUri = new Uri(modelFilePath);
 

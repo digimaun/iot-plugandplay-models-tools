@@ -1,8 +1,6 @@
 ﻿using Azure.IoT.DeviceModelsRepository.Resolver;
 using Microsoft.Azure.DigitalTwins.Parser;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Azure.IoT.DeviceModelsRepository.CLI
@@ -43,19 +41,14 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             }
         }
 
-        public async static Task WriteInputsAsync(string command, Dictionary<string, string> inputs)
+        public async static Task WriteDebugAsync(string debug, ConsoleColor? color = null)
         {
-            Console.ForegroundColor = ConsoleColor.DarkCyan;
-            StringBuilder builder = new StringBuilder();
-            builder.Append($"{command}");
-            foreach (var item in inputs)
+            if (!color.HasValue)
             {
-                if (item.Value != null)
-                {
-                    builder.Append($" --{item.Key} {item.Value}");
-                }
+                Console.ForegroundColor = ConsoleColor.DarkCyan;
             }
-            await Console.Error.WriteLineAsync($"{builder}{Environment.NewLine}");
+
+            await Console.Error.WriteLineAsync(debug);
             Console.ResetColor();
         }
     }

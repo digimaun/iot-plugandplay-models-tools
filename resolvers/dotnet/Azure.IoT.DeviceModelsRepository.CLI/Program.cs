@@ -27,6 +27,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             root.Add(BuildImportModelCommand());
 
             root.AddGlobalOption(CommonOptions.Debug);
+            root.AddGlobalOption(CommonOptions.Silent);
 
             CommandLineBuilder builder = new CommandLineBuilder(root);
             builder.UseMiddleware(async (context, next) =>
@@ -34,9 +35,17 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                 AzureEventSourceListener listener = null;
                 try
                 {
+                    await Outputs.WriteHeaderAsync();
+
                     if (context.ParseResult.Tokens.Any(x => x.Type == TokenType.Option && x.Value == "--debug"))
                     {
                         listener = AzureEventSourceListener.CreateConsoleLogger(EventLevel.Verbose);
+                        await Outputs.WriteDebugAsync(context.ParseResult.ToString());
+                    }
+
+                    if (context.ParseResult.Tokens.Any(x => x.Type == TokenType.Option && x.Value == "--silent"))
+                    {
+                        System.Console.SetOut(TextWriter.Null);
                     }
 
                     await next(context);
@@ -64,13 +73,12 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                 modelFileOpt,
                 CommonOptions.Repo,
                 CommonOptions.Deps,
-                CommonOptions.Output,
-                CommonOptions.Silent
+                CommonOptions.Output
             };
 
             exportModelCommand.Description =
                 "Retrieve a model and its dependencies by dtmi using the target repository for model resolution.";
-            exportModelCommand.Handler = CommandHandler.Create<string, string, string, bool, FileInfo, DependencyResolutionOption>(Handlers.Export);
+            exportModelCommand.Handler = CommandHandler.Create<string, FileInfo, string, DependencyResolutionOption, string>(Handlers.Export);
 
             return exportModelCommand;
         }
@@ -91,7 +99,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             validateModelCommand.Description =
                 "Validates a model using the DTDL model parser & resolver. The target repository is used for model resolution. ";
             validateModelCommand.Handler =
-                CommandHandler.Create<FileInfo, string, bool, bool, DependencyResolutionOption>(Handlers.Validate);
+                CommandHandler.Create<FileInfo, string, DependencyResolutionOption, bool>(Handlers.Validate);
 
             return validateModelCommand;
         }
@@ -107,10 +115,9 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                 CommonOptions.LocalRepo,
                 CommonOptions.Deps,
                 CommonOptions.Strict,
-                CommonOptions.Silent
             };
             importModelCommand.Description = "Imports models from a local model file into the target local repository.";
-            importModelCommand.Handler = CommandHandler.Create<FileInfo, DirectoryInfo, DependencyResolutionOption, bool, bool>(Handlers.Import);
+            importModelCommand.Handler = CommandHandler.Create<FileInfo, DirectoryInfo, DependencyResolutionOption, bool>(Handlers.Import);
 
             return importModelCommand;
         }

@@ -23,23 +23,8 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             public const int ValidationError = 4;
         }
 
-        public static async Task<int> Export(string dtmi, string repo, string output, bool silent, FileInfo modelFile, DependencyResolutionOption deps)
+        public static async Task<int> Export(string dtmi, FileInfo modelFile, string repo, DependencyResolutionOption deps, string output)
         {
-            if (!silent)
-            {
-                await Outputs.WriteHeaderAsync();
-                await Outputs.WriteInputsAsync("export",
-                    new Dictionary<string, string> {
-                            {"dtmi", dtmi },
-                            {"model-file", modelFile?.FullName},
-                            {"repo", repo },
-                            {"deps", deps.ToString() },
-                            {"output", output },
-                    });
-            }
-
-            IDictionary<string, string> result;
-
             //check that we have either model file or dtmi
             if (string.IsNullOrWhiteSpace(dtmi) && modelFile == null)
             {
@@ -61,8 +46,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                     }
                 }
 
-                result = await parsing.GetResolver(resolutionOption: deps).ResolveAsync(dtmi);
-
+                IDictionary<string, string> result = await parsing.GetResolver(resolutionOption: deps).ResolveAsync(dtmi);
                 List<string> resultList = result.Values.ToList();
                 string normalizedList = string.Join(',', resultList);
                 string payload = $"[{normalizedList}]";
@@ -74,8 +58,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
                 using StreamReader streamReader = new StreamReader(stream);
                 string jsonSerialized = await streamReader.ReadToEndAsync();
 
-                if (!silent)
-                    await Outputs.WriteOutAsync(jsonSerialized);
+                await Outputs.WriteOutAsync(jsonSerialized);
 
                 if (!string.IsNullOrEmpty(output))
                 {
@@ -97,20 +80,8 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             return ReturnCodes.Success;
         }
 
-        public static async Task<int> Validate(FileInfo modelFile, string repo, bool silent, bool strict, DependencyResolutionOption deps)
+        public static async Task<int> Validate(FileInfo modelFile, string repo, DependencyResolutionOption deps, bool strict)
         {
-            if (!silent)
-            {
-                await Outputs.WriteHeaderAsync();
-                await Outputs.WriteInputsAsync("validate",
-                    new Dictionary<string, string> {
-                            {"model-file", modelFile.FullName },
-                            {"repo", repo },
-                            {"deps",  deps.ToString()},
-                            {"strict", strict.ToString() }
-                    });
-            }
-
             Parsing parsing = new Parsing(repo);
 
             try
@@ -206,23 +177,11 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             return ReturnCodes.Success;
         }
 
-        public static async Task<int> Import(FileInfo modelFile, DirectoryInfo localRepo, DependencyResolutionOption deps, bool silent, bool strict)
+        public static async Task<int> Import(FileInfo modelFile, DirectoryInfo localRepo, DependencyResolutionOption deps, bool strict)
         {
             if (localRepo == null)
             {
                 localRepo = new DirectoryInfo(Path.GetFullPath("."));
-            }
-
-            if (!silent)
-            {
-                await Outputs.WriteHeaderAsync();
-                await Outputs.WriteInputsAsync("import",
-                    new Dictionary<string, string> {
-                            {"model-file", modelFile.FullName },
-                            {"local-repo", localRepo.FullName },
-                            {"deps",  deps.ToString()},
-                            {"strict", strict.ToString()}
-                    });
             }
 
             Parsing parsing = new Parsing(localRepo.FullName);

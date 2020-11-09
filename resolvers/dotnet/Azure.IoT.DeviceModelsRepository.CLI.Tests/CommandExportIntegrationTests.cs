@@ -127,7 +127,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI.Tests
             (int returnCode, _, string standardError) = ClientInvokator.Invoke($"export --dtmi \"{dtmi}\"");
 
             Assert.AreEqual(Handlers.ReturnCodes.InvalidArguments, returnCode);
-            Assert.True(standardError.StartsWith("Invalid dtmi format"));
+            Assert.True(standardError.Contains("Invalid dtmi format"));
         }
 
         [TestCase("dtmi:com:example:Thermojax;999", TestHelpers.ClientType.Local)]
@@ -158,14 +158,14 @@ namespace Azure.IoT.DeviceModelsRepository.CLI.Tests
             Assert.AreEqual(string.Empty, standardOut);
         }
 
-        [TestCase("dtmi:strict:nonjson;1")]
-        public void ExportNonJsonContentWillError(string dtmi)
+        [TestCase("dtmi:strict:nondtdl;1")]
+        public void ExportNonDtdlContentWillError(string dtmi)
         {
             (int returnCode, _, string standardError) =
                 ClientInvokator.Invoke($"export --dtmi \"{dtmi}\" --repo \"{TestHelpers.TestLocalModelRepository}\"");
 
-            Assert.AreEqual(Handlers.ReturnCodes.InvalidArguments, returnCode);
-            Assert.True(standardError.Contains("ERROR: Parsing json-ld content."));
+            Assert.AreEqual(Handlers.ReturnCodes.ResolutionError, returnCode);
+            Assert.True(standardError.Contains($"ERROR: Unable to resolve \"{dtmi}\"."));
         }
     }
 }

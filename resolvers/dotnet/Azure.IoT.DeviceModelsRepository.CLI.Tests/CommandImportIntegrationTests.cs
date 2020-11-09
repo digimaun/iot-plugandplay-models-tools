@@ -142,8 +142,8 @@ namespace Azure.IoT.DeviceModelsRepository.CLI.Tests
             Assert.True(standardError.Contains(violationDtmi));
         }
 
-        [TestCase("dtmi/strict/nonjson-1.json")]
-        public void ImportModelFileErrorNonJsonContent(string modelFilePath)
+        [TestCase("dtmi/strict/nondtdl-1.json")]
+        public void ImportModelFileErrorNonDtdlContent(string modelFilePath)
         {
             string qualifiedModelFilePath = Path.Combine(TestHelpers.TestLocalModelRepository, modelFilePath);
             string targetRepo = $"--local-repo \"{testImportRepo.FullName}\"";
@@ -152,7 +152,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI.Tests
                 ClientInvokator.Invoke($"import --model-file \"{qualifiedModelFilePath}\" {targetRepo}");
 
             Assert.AreEqual(Handlers.ReturnCodes.InvalidArguments, returnCode);
-            Assert.True(standardError.Contains("ERROR: Parsing json-ld content."));
+            Assert.True(standardError.Contains("ERROR: Importing model file contents of kind String is not yet supported."));
         }
 
         [TestCase("dtmi/strict/emptyarray-1.json")]
@@ -166,6 +166,20 @@ namespace Azure.IoT.DeviceModelsRepository.CLI.Tests
 
             Assert.AreEqual(Handlers.ReturnCodes.ValidationError, returnCode);
             Assert.True(standardError.Contains("ERROR: No models to import."));
+        }
+
+        [TestCase("dtmi/com/example/thermostat-1.json")]
+        public void ImportModelFileSilentNoStandardOut(string modelFilePath)
+        {
+            string qualifiedModelFilePath = Path.Combine(TestHelpers.TestLocalModelRepository, modelFilePath);
+            string targetRepo = $"--local-repo \"{testImportRepo.FullName}\"";
+
+            (int returnCode, string standardOut, string standardError) =
+                ClientInvokator.Invoke($"import --silent --model-file \"{qualifiedModelFilePath}\" {targetRepo}");
+
+            Assert.AreEqual(Handlers.ReturnCodes.Success, returnCode);
+            Assert.True(!standardError.Contains("ERROR:"));
+            Assert.AreEqual(string.Empty, standardOut);
         }
     }
 }

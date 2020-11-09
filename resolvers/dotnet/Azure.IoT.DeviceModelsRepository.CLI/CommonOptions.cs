@@ -93,7 +93,7 @@ namespace Azure.IoT.DeviceModelsRepository.CLI
             {
                 return new Option<bool>(
                     alias: "--silent",
-                    description: "Silences command result output on stdout.",
+                    description: "Silences command output on standard out.",
                     getDefaultValue: () => false)
                 {
                     Argument = new Argument<bool>
