@@ -1,0 +1,1156 @@
+{
+  "dtmi:AAEON:UPSquaredPro;1": {
+    "displayName": "AAEON-UPSquaredPro"
+  },
+  "dtmi:ADLINK:cExpress_TL;1": {
+    "displayName": "ADLINK-cExpress-TL"
+  },
+  "dtmi:ADLINK:IPiSMARCPx30;1": {
+    "displayName": "ADLINK-IPiSMARCPx30"
+  },
+  "dtmi:ADLINK:MXC662X2E;1": {
+    "displayName": "ADLINK-MXC662X2E"
+  },
+  "dtmi:Advantech:AIIS_3410P;1": {
+    "displayName": "AIIS-3410P"
+  },
+  "dtmi:Advantech:AIMB_228;1": {
+    "displayName": "AIMB-228"
+  },
+  "dtmi:Advantech:AIMB_233;1": {
+    "displayName": "AIMB-233"
+  },
+  "dtmi:Advantech:AIMB_276;1": {
+    "displayName": "AIMB-276"
+  },
+  "dtmi:Advantech:AIMB_286;1": {
+    "displayName": "AIMB-286"
+  },
+  "dtmi:Advantech:AIMB_286EF;1": {
+    "displayName": "AIMB-286EF"
+  },
+  "dtmi:Advantech:AIMB_506;1": {
+    "displayName": "AIMB-506"
+  },
+  "dtmi:Advantech:AIMB_586;1": {
+    "displayName": "AIMB-586"
+  },
+  "dtmi:Advantech:AIMB_U233;1": {
+    "displayName": "AIMB-U233"
+  },
+  "dtmi:Advantech:AIR_101;1": {
+    "displayName": "AIR-101"
+  },
+  "dtmi:Advantech:AIR_200;1": {
+    "displayName": "AIR-200"
+  },
+  "dtmi:Advantech:AIR_300;1": {
+    "displayName": "AIR-300"
+  },
+  "dtmi:Advantech:ARK_1124;1": {
+    "displayName": "ARK-1124"
+  },
+  "dtmi:Advantech:ARK_1220L;1": {
+    "displayName": "ARK-1220L"
+  },
+  "dtmi:Advantech:ARK_1551;1": {
+    "displayName": "ARK-1551"
+  },
+  "dtmi:Advantech:ARK_2250V;1": {
+    "displayName": "ARK-2250V"
+  },
+  "dtmi:Advantech:DeviceDetailedInformation;1": {
+    "displayName": "Device Detailed Information"
+  },
+  "dtmi:Advantech:DS_580;1": {
+    "displayName": "DS-580"
+  },
+  "dtmi:Advantech:EIS_D110;1": {
+    "displayName": "EIS-D110"
+  },
+  "dtmi:Advantech:EIS_D150;1": {
+    "displayName": "EIS-D150"
+  },
+  "dtmi:Advantech:EIS_D210;1": {
+    "displayName": "EIS-D210"
+  },
+  "dtmi:Advantech:EIS_D620;1": {
+    "displayName": "EIS-D620"
+  },
+  "dtmi:Advantech:EIS_S230;1": {
+    "displayName": "EIS-S230"
+  },
+  "dtmi:Advantech:EI_52;1": {
+    "displayName": "EI-52"
+  },
+  "dtmi:Advantech:EPC_P3000;1": {
+    "displayName": "EPC-P3000"
+  },
+  "dtmi:Advantech:EPC_T1228;1": {
+    "displayName": "EPC-T1228"
+  },
+  "dtmi:Advantech:EPC_T2285;1": {
+    "displayName": "EPC-T2285"
+  },
+  "dtmi:Advantech:EPC_T3217;1": {
+    "displayName": "EPC-T3217"
+  },
+  "dtmi:Advantech:EPC_T4286;1": {
+    "displayName": "EPC-T4286"
+  },
+  "dtmi:Advantech:EPC_U2117;1": {
+    "displayName": "EPC-U2117"
+  },
+  "dtmi:Advantech:EPC_U2117;2": {
+    "displayName": "EPC-U2117"
+  },
+  "dtmi:Advantech:esrp_uno1372;1": {
+    "displayName": "ADVANTECH device Model"
+  },
+  "dtmi:Advantech:esrp_uno2271;1": {
+    "displayName": "ADVANTECH device Model"
+  },
+  "dtmi:Advantech:esrp_uno2372;1": {
+    "displayName": "ADVANTECH device Model"
+  },
+  "dtmi:Advantech:esrp_uno2484;1": {
+    "displayName": "ADVANTECH device Model"
+  },
+  "dtmi:Advantech:esrp_uno_deviceInformation;1": {
+    "displayName": "Device Information"
+  },
+  "dtmi:Advantech:esrp_uno_gpio;1": {
+    "displayName": "GPIO",
+    "description": "Provides functionality to set/get GPIO value"
+  },
+  "dtmi:Advantech:esrp_uno_hardwaremonitor;1": {
+    "displayName": "Hardware Monitor",
+    "description": "Provides functionality to report data from hardware monitor IC"
+  },
+  "dtmi:Advantech:GPIO;1": {
+    "displayName": "GPIO"
+  },
+  "dtmi:Advantech:IPC_220;1": {
+    "displayName": "IPC-220"
+  },
+  "dtmi:Advantech:MIC_710AIX;1": {
+    "displayName": "MIC-710AIX"
+  },
+  "dtmi:Advantech:MIC_77Q;1": {
+    "displayName": "MIC-77Q"
+  },
+  "dtmi:Advantech:SDRAM;1": {
+    "displayName": "SDRAM"
+  },
+  "dtmi:Advantech:SensorsInformation;1": {
+    "displayName": "Sensor Information"
+  },
+  "dtmi:Advantech:SensorsInformation;2": {
+    "displayName": "Sensor Information"
+  },
+  "dtmi:Advantech:SOM_6882;1": {
+    "displayName": "SOM-6882"
+  },
+  "dtmi:Advantech:UTC_510;1": {
+    "displayName": "UTC-510"
+  },
+  "dtmi:Advantech:UTC_515;1": {
+    "displayName": "UTC-515"
+  },
+  "dtmi:Advantech:UTC_520;1": {
+    "displayName": "UTC-520"
+  },
+  "dtmi:Advantech:UTC_520;2": {
+    "displayName": "UTC-520"
+  },
+  "dtmi:Advantech:UTC_520;3": {
+    "displayName": "UTC-520"
+  },
+  "dtmi:Advantech:UTC_532;1": {
+    "displayName": "UTC-532"
+  },
+  "dtmi:Advantech:VGA;1": {
+    "displayName": "VGA"
+  },
+  "dtmi:Allegion:LockConfig;1": {
+    "displayName": "LockConfig"
+  },
+  "dtmi:Arbor:FPC8100;1": {
+    "displayName": "Arbor-FPC8100"
+  },
+  "dtmi:ASUS:PE100A;1": {
+    "displayName": "ASUS-PE100A"
+  },
+  "dtmi:ASUS:PE200S;1": {
+    "displayName": "ASUS-PE200S"
+  },
+  "dtmi:ASUS:PE200U;1": {
+    "displayName": "ASUS-PE200U"
+  },
+  "dtmi:ASUS:TinkerBoard;1": {
+    "displayName": "ASUS-TinkerBoard"
+  },
+  "dtmi:ASUS:TinkerBoardBasic;1": {
+    "displayName": "ASUS-TinkerBoardBasic"
+  },
+  "dtmi:AVCON:CS1950;1": {
+    "displayName": "AVCON-CS1950"
+  },
+  "dtmi:avnet:mt3620Starterkit;1": {
+    "displayName": "StarterKitOutOfBoxExample",
+    "description": "Implements the interface for the Avnet Azure Sphere Starter Kit Out of Box example"
+  },
+  "dtmi:avnet:Starterkit;1": {
+    "displayName": "StarterKitOutOfBoxExample"
+  },
+  "dtmi:avnet:Starterkit;2": {
+    "displayName": "StarterKitOutOfBoxExample"
+  },
+  "dtmi:Bosch:XDK110;1": {
+    "displayName": "XDK110",
+    "description": "Reports temperature, humidity, pressure, illuminance, noise level, acceleration, angular velocity, magnetic field and heart beat message. Supports reboot command as well."
+  },
+  "dtmi:Brainium:SmartEdgeAgile;1": {
+    "displayName": "SmartEdgeAgile",
+    "description": "Multi sensor IoT device"
+  },
+  "dtmi:DTResearch:DT311T;1": {
+    "displayName": "DTResearch-DT311T"
+  },
+  "dtmi:Espressif:DeviceInformation;1": {
+    "displayName": "Device Information"
+  },
+  "dtmi:Espressif:DeviceInformation;2": {
+    "displayName": "Device Information"
+  },
+  "dtmi:Espressif:SensorAltitude;1": {
+    "displayName": "SensorAltitude",
+    "description": "Reports current temperature and provides desired temperature control."
+  },
+  "dtmi:Espressif:SensorAltitude;2": {
+    "displayName": "SensorAltitude",
+    "description": "Current altitude on the device"
+  },
+  "dtmi:Espressif:SensorController;1": {
+    "displayName": "Sensor Controller",
+    "description": "Device with two thermostats and remote reboot."
+  },
+  "dtmi:Espressif:SensorController;2": {
+    "displayName": "Sensor Controller",
+    "description": "Device with multiple sensors and remote reboot."
+  },
+  "dtmi:Espressif:SensorFanSpeed;1": {
+    "displayName": "SensorFanSpeed",
+    "description": "Reports current temperature and provides desired temperature control."
+  },
+  "dtmi:Espressif:SensorHumid;1": {
+    "displayName": "SensorHumid",
+    "description": "Reports current temperature and provides desired temperature control."
+  },
+  "dtmi:Espressif:SensorHumid;2": {
+    "displayName": "SensorHumid",
+    "description": "Current SensorHumid on the device is HTS221."
+  },
+  "dtmi:Espressif:SensorLight;1": {
+    "displayName": "SensorLight",
+    "description": "Reports current temperature and provides desired temperature control."
+  },
+  "dtmi:Espressif:SensorLight;2": {
+    "displayName": "SensorLight",
+    "description": "Current pressure on the device is BH1750FVI"
+  },
+  "dtmi:Espressif:SensorMagnetX;1": {
+    "displayName": "SensorMagnetX",
+    "description": "Reports current temperature and provides desired temperature control."
+  },
+  "dtmi:Espressif:SensorMagnetX;2": {
+    "displayName": "SensorMagnetX",
+    "description": "Current MagnetX on the device is MPU6050"
+  },
+  "dtmi:Espressif:SensorMagnetY;1": {
+    "displayName": "SensorMagnetY",
+    "description": "Reports current temperature and provides desired temperature control."
+  },
+  "dtmi:Espressif:SensorMagnetY;2": {
+    "displayName": "SensorMagnetY",
+    "description": "Current MagnetY on the device is MPU6050"
+  },
+  "dtmi:Espressif:SensorMagnetZ;1": {
+    "displayName": "SensorMagnetZ",
+    "description": "Reports current temperature and provides desired temperature control."
+  },
+  "dtmi:Espressif:SensorMagnetZ;2": {
+    "displayName": "SensorMagnetZ",
+    "description": "Current MagnetZ on the device is MPU6050"
+  },
+  "dtmi:Espressif:SensorPitch;1": {
+    "displayName": "SensorPitch",
+    "description": "Reports current temperature and provides desired temperature control."
+  },
+  "dtmi:Espressif:SensorPitch;2": {
+    "displayName": "SensorPitch",
+    "description": "Current pitch on the device"
+  },
+  "dtmi:Espressif:SensorPressure;1": {
+    "displayName": "SensorPressure",
+    "description": "Reports current temperature and provides desired temperature control."
+  },
+  "dtmi:Espressif:SensorPressure;2": {
+    "displayName": "SensorPressure",
+    "description": "Current pressure on the device is FBM320"
+  },
+  "dtmi:Espressif:SensorRoll;1": {
+    "displayName": "SensorRoll",
+    "description": "Reports current temperature and provides desired temperature control."
+  },
+  "dtmi:Espressif:SensorRoll;2": {
+    "displayName": "SensorRoll",
+    "description": "Current Roll on the device"
+  },
+  "dtmi:Espressif:SensorTemp;1": {
+    "displayName": "SensorTemp",
+    "description": "Reports current temperature and provides desired temperature control."
+  },
+  "dtmi:Espressif:SensorTempthreshold;1": {
+    "displayName": "SensorTempthreshold",
+    "description": "Reports current temperature and provides desired temperature control."
+  },
+  "dtmi:Eurotech:Asset_Service;1": {
+    "displayName": "Asset Service"
+  },
+  "dtmi:Eurotech:Asset_Service;2": {
+    "displayName": "Asset Service"
+  },
+  "dtmi:Eurotech:Diagnostic_Service;1": {
+    "displayName": "Diagnostic Service"
+  },
+  "dtmi:Eurotech:Diagnostic_Service;2": {
+    "displayName": "Diagnostic Service"
+  },
+  "dtmi:Eurotech:Diagnostic_Service;3": {
+    "displayName": "Diagnostic Service"
+  },
+  "dtmi:Eurotech:RG_10_12_6x;1": {
+    "displayName": "Reliagate 10-12-6x"
+  },
+  "dtmi:Eurotech:RG_10_12_6x;2": {
+    "displayName": "Reliagate 10-12-6x"
+  },
+  "dtmi:Eurotech:RG_10_12_6x;3": {
+    "displayName": "Reliagate 10-12-6x"
+  },
+  "dtmi:everfocus:camera;1": {
+    "displayName": "Camera"
+  },
+  "dtmi:everfocus:envp_series_desktop;1": {
+    "displayName": "eNVP-Series-Desktop",
+    "description": "NVIDIA Jetson AI Network Video Recorder"
+  },
+  "dtmi:everfocus:envp_series_vehicle;1": {
+    "displayName": "eNVP-Series-Vehicle",
+    "description": "NVIDIA Jetson AI Network Video Recorder"
+  },
+  "dtmi:everfocus:kauai_ai_kit_maskdetection;1": {
+    "displayName": "EverFocus KAUAI AI Kit-Face Mask Detection",
+    "description": "AI Edge Computing Module with Kneron KL520 NPU"
+  },
+  "dtmi:FutureRobot:E300;1": {
+    "displayName": "FutureRobot-E300-441"
+  },
+  "dtmi:FutureRobot:E521;1": {
+    "displayName": "FutureRobot-E521-3360"
+  },
+  "dtmi:FutureRobot:V300;1": {
+    "displayName": "FutureRobot-V300-5360"
+  },
+  "dtmi:GIGAIPC:QBiXProWHLA8265HC2;1": {
+    "displayName": "GIGAIPC-QBiXProWHLA8265HC2"
+  },
+  "dtmi:himax:weiplus;1": {},
+  "dtmi:himax:weiplus;2": {},
+  "dtmi:Hisense:HK570;1": {
+    "displayName": "Hisense-HK570"
+  },
+  "dtmi:iBase:AGS102;1": {
+    "displayName": "iBase-AGS102"
+  },
+  "dtmi:iBase:BaseInfo;1": {
+    "displayName": "General Device Information (base)"
+  },
+  "dtmi:iBase:IB836;1": {
+    "displayName": "iBase-IB836"
+  },
+  "dtmi:ibase:ib836;2": {
+    "displayName": "iBase-IB836"
+  },
+  "dtmi:ibase:IB897;1": {
+    "displayName": "iBase-IB897"
+  },
+  "dtmi:ibase:ib953;1": {
+    "displayName": "iBase-IB953"
+  },
+  "dtmi:ibase:ibr210;1": {
+    "displayName": "iBase-IBR210"
+  },
+  "dtmi:ibase:LinuxDeviceInfo;1": {
+    "displayName": "General Device Information (Linux)"
+  },
+  "dtmi:iBase:LinuxInfo;1": {
+    "displayName": "General Device Information (Linux)"
+  },
+  "dtmi:ibase:mi805;1": {
+    "displayName": "iBase-MI805"
+  },
+  "dtmi:iBase:MI999;1": {
+    "displayName": "iBase-MI999"
+  },
+  "dtmi:ibase:mi999;2": {
+    "displayName": "iBase-MI999"
+  },
+  "dtmi:ibase:WindowsDeviceInfo;1": {
+    "displayName": "General Device Information (Windows)"
+  },
+  "dtmi:ip3:streetlamp;1": {
+    "displayName": "streetlamp",
+    "description": "ip3.co.ltd"
+  },
+  "dtmi:JWIPC:K065;1": {
+    "displayName": "JWIPC-K065"
+  },
+  "dtmi:M5Stack:DeviceInformation;1": {
+    "displayName": "Device Information"
+  },
+  "dtmi:nexcom:APPC3154;1": {
+    "displayName": "APPC3154"
+  },
+  "dtmi:nexcom:IPPC2150P;1": {
+    "displayName": "IPPC2150P"
+  },
+  "dtmi:nexcom:NEUX100;1": {
+    "displayName": "NEU-X100"
+  },
+  "dtmi:nexcom:NEUX300;1": {
+    "displayName": "NEU-X300"
+  },
+  "dtmi:nexcom:nexDeviceInfo;1": {
+    "displayName": "Nexcom Xcare Device Information"
+  },
+  "dtmi:nexcom:nexdeviceinfo;2": {
+    "displayName": "Nexcom Xcare Device Information"
+  },
+  "dtmi:nexcom:NIFE105W;1": {
+    "displayName": "NIFE105W"
+  },
+  "dtmi:nexcom:NIFE200P2e;1": {
+    "displayName": "NIFE200P2e"
+  },
+  "dtmi:nexcom:NIFE300e3;1": {
+    "displayName": "NIFE300e3"
+  },
+  "dtmi:nexcom:NISE107;1": {
+    "displayName": "NISE107"
+  },
+  "dtmi:nexcom:NISE108;1": {
+    "displayName": "NISE108"
+  },
+  "dtmi:nexcom:NISE3600p2e;1": {
+    "displayName": "NISE3600p2e"
+  },
+  "dtmi:nexcom:NISE3800p2e;1": {
+    "displayName": "NISE3800p2e"
+  },
+  "dtmi:nexcom:NISE3900p2e;1": {
+    "displayName": "NISE3900p2e"
+  },
+  "dtmi:nexcom:NISE4200;1": {
+    "displayName": "NISE4200"
+  },
+  "dtmi:nexcom:NISE4300;1": {
+    "displayName": "NISE4300"
+  },
+  "dtmi:nexcom:SMB210;1": {
+    "displayName": "SMB210"
+  },
+  "dtmi:nexcom:xcare_appc3154;1": {
+    "displayName": "APPC3154"
+  },
+  "dtmi:nexcom:xcare_ippc2150p;1": {
+    "displayName": "Xcare for IPPC2150P"
+  },
+  "dtmi:nexcom:xcare_neux100;1": {
+    "displayName": "Xcare for NEU-X100"
+  },
+  "dtmi:nexcom:xcare_neux300;1": {
+    "displayName": "Xcare for NEU-X300"
+  },
+  "dtmi:nexcom:xcare_nife105w;1": {
+    "displayName": "Xcare for NIFE105W"
+  },
+  "dtmi:nexcom:xcare_nife200p2e;1": {
+    "displayName": "Xcare for NIFE200P2e"
+  },
+  "dtmi:nexcom:xcare_nife300e3;1": {
+    "displayName": "Xcare for NIFE300e3"
+  },
+  "dtmi:nexcom:xcare_nise107;1": {
+    "displayName": "Xcare for NISE107"
+  },
+  "dtmi:nexcom:xcare_nise108;1": {
+    "displayName": "Xcare for NISE108"
+  },
+  "dtmi:nexcom:xcare_nise3600p2e;1": {
+    "displayName": "Xcare for NISE3600p2e"
+  },
+  "dtmi:nexcom:xcare_nise3800p2e;1": {
+    "displayName": "Xcare for NISE3800p2e"
+  },
+  "dtmi:nexcom:xcare_nise3900p2e;1": {
+    "displayName": "Xcare for NISE3900p2e"
+  },
+  "dtmi:nexcom:xcare_nise4200;1": {
+    "displayName": "Xcare for NISE4200"
+  },
+  "dtmi:nexcom:xcare_nise4300;1": {
+    "displayName": "Xcare for NISE4300"
+  },
+  "dtmi:Nexcom:xcare_nise50;1": {
+    "displayName": "Xcare for Nise50"
+  },
+  "dtmi:Nexcom:xcare_nise51;1": {
+    "displayName": "Xcare for Nise51"
+  },
+  "dtmi:Nexcom:xcare_nise52;1": {
+    "displayName": "Xcare for Nise52"
+  },
+  "dtmi:nexcom:xcare_smb210;1": {
+    "displayName": "Xcare for SMB210"
+  },
+  "dtmi:nuvoton:numaker_iot_m487_dev;1": {
+    "displayName": "NuMaker IoT M487 Dev"
+  },
+  "dtmi:nuvoton:sensor_bmx055;1": {
+    "displayName": "Motion Sensor BMX055",
+    "description": "Report current temperature and acceleration."
+  },
+  "dtmi:osconfig:commandrunner;1": {
+    "displayName": "Command Runner",
+    "description": "Provides functionality to remotely run commands on the device"
+  },
+  "dtmi:osconfig:deviceosconfiguration;1": {
+    "displayName": "Device OS Configuration"
+  },
+  "dtmi:osconfig:deviceosconfiguration;2": {
+    "displayName": "Device OS Configuration"
+  },
+  "dtmi:osconfig:deviceosconfiguration;3": {
+    "displayName": "Device OS Configuration"
+  },
+  "dtmi:osconfig:firewall;1": {
+    "displayName": "Firewall",
+    "description": "Provides functionality to remotely query firewall rules on device"
+  },
+  "dtmi:osconfig:networking;1": {
+    "displayName": "Networking",
+    "description": "Provides functionality to remotely query device networking"
+  },
+  "dtmi:osconfig:settings;1": {
+    "displayName": "Settings",
+    "description": "Provides functionality to remotely configure other settings on the device"
+  },
+  "dtmi:Partner:AudreyFamily;1": {
+    "displayName": "Partner-AudreyFamily"
+  },
+  "dtmi:Partnertech:AudreyFamily;1": {
+    "displayName": "Partnertech-AudreyFamily"
+  },
+  "dtmi:Partnertech:e5;1": {
+    "displayName": "Partnertech-E5"
+  },
+  "dtmi:Partnertech:g4;1": {
+    "displayName": "Partnertech-G4"
+  },
+  "dtmi:Partnertech:g5;1": {
+    "displayName": "Partnertech-G5"
+  },
+  "dtmi:Partnertech:m3w2;1": {
+    "displayName": "Partnertech-M3W-2"
+  },
+  "dtmi:Partnertech:pt1550;1": {
+    "displayName": "Partnertech-PT1550"
+  },
+  "dtmi:Partnertech:sp1030;1": {
+    "displayName": "Partnertech-SP1030"
+  },
+  "dtmi:Partnertech:sp1060;1": {
+    "displayName": "Partnertech-SP1060"
+  },
+  "dtmi:Partnertech:sp2500;1": {
+    "displayName": "Partnertech-SP2500"
+  },
+  "dtmi:Partnertech:sp2600;1": {
+    "displayName": "Partnertech-SP2600"
+  },
+  "dtmi:Partnertech:sp3500;1": {
+    "displayName": "Partnertech-SP3500"
+  },
+  "dtmi:Partnertech:sp550;1": {
+    "displayName": "Partnertech-SP550"
+  },
+  "dtmi:Partnertech:sp5514;1": {
+    "displayName": "Partnertech-SP5514"
+  },
+  "dtmi:Partnertech:sp6212;1": {
+    "displayName": "Partnertech-SP6212"
+  },
+  "dtmi:Partnertech:sp6215;1": {
+    "displayName": "Partnertech-SP6215"
+  },
+  "dtmi:Partnertech:sp6515;1": {
+    "displayName": "Partnertech-SP6515"
+  },
+  "dtmi:Partnertech:sp850;1": {
+    "displayName": "Partnertech-SP850"
+  },
+  "dtmi:Protech:SE_N207;1": {
+    "displayName": "Protech-SE_N207"
+  },
+  "dtmi:realtek:rtk_ameba_series;1": {
+    "displayName": "Realtek Ameba",
+    "description": "Realtek Ameba iot device."
+  },
+  "dtmi:realtek:rtk_audio;1": {
+    "displayName": "Audio",
+    "description": "Audio feature on ameba device."
+  },
+  "dtmi:realtek:rtk_bluetooth;1": {
+    "displayName": "Bluetooth",
+    "description": "Bluetooth feature on ameba device."
+  },
+  "dtmi:realtek:rtk_device_info;1": {
+    "displayName": "Device Information",
+    "description": "Ameba device information."
+  },
+  "dtmi:realtek:rtk_gpio;1": {
+    "displayName": "GPIO",
+    "description": "GPIO feature on ameba device."
+  },
+  "dtmi:realtek:rtk_lcd;1": {
+    "displayName": "LCD",
+    "description": "LCD feature on ameba device."
+  },
+  "dtmi:realtek:rtk_memory;1": {
+    "displayName": "Memory",
+    "description": "Ameba device memory configuration."
+  },
+  "dtmi:realtek:rtk_system;1": {
+    "displayName": "System",
+    "description": "Ameba device system information."
+  },
+  "dtmi:realtek:rtk_video;1": {
+    "displayName": "Video",
+    "description": "Video feature on ameba device"
+  },
+  "dtmi:realtek:rtk_wireless;1": {
+    "displayName": "Wireless",
+    "description": "Wireless feature on ameba device"
+  },
+  "dtmi:rigado:C500W;1": {
+    "displayName": {
+      "en": "C500W"
+    }
+  },
+  "dtmi:rigado:C500W;2": {
+    "displayName": {
+      "en": "C500W"
+    }
+  },
+  "dtmi:rigado:Cascade500;1": {
+    "displayName": {
+      "en": "Cascade 500"
+    }
+  },
+  "dtmi:rigado:EPaperDisplay;1": {
+    "displayName": {
+      "en": "EPaperDisplay"
+    }
+  },
+  "dtmi:rigado:EPaperDisplay;2": {
+    "displayName": {
+      "en": "EPaperDisplay"
+    }
+  },
+  "dtmi:rigado:FlicButton;1": {
+    "displayName": {
+      "en": "Flic Button"
+    }
+  },
+  "dtmi:rigado:FlicButton;2": {
+    "displayName": {
+      "en": "Flic Button"
+    }
+  },
+  "dtmi:rigado:HellaAPS90;1": {
+    "displayName": {
+      "en": "Hella APS90"
+    }
+  },
+  "dtmi:rigado:HellaAPS90;2": {
+    "displayName": {
+      "en": "Hella APS90"
+    }
+  },
+  "dtmi:rigado:HoboMX100;1": {
+    "displayName": {
+      "en": "Hobo MX-100"
+    }
+  },
+  "dtmi:rigado:HoboMX100;2": {
+    "displayName": {
+      "en": "Hobo MX-100"
+    }
+  },
+  "dtmi:rigado:HoboMX1102A;1": {
+    "displayName": {
+      "en": "Hobo MX-1102A"
+    }
+  },
+  "dtmi:rigado:HoboMX1102A;2": {
+    "displayName": {
+      "en": "Hobo MX-1102A"
+    }
+  },
+  "dtmi:rigado:IotDevice;1": {
+    "displayName": {
+      "en": "IotDevice"
+    }
+  },
+  "dtmi:rigado:MinewC7;1": {
+    "displayName": {
+      "en": "Minew C7"
+    }
+  },
+  "dtmi:rigado:MinewC7;2": {
+    "displayName": {
+      "en": "Minew C7"
+    }
+  },
+  "dtmi:rigado:MinewE8;1": {
+    "displayName": {
+      "en": "Minew E8"
+    }
+  },
+  "dtmi:rigado:MinewE8;2": {
+    "displayName": {
+      "en": "Minew E8"
+    }
+  },
+  "dtmi:rigado:MinewS4;1": {
+    "displayName": {
+      "en": "Minew S4"
+    }
+  },
+  "dtmi:rigado:MinewS4;2": {
+    "displayName": {
+      "en": "Minew S4"
+    }
+  },
+  "dtmi:rigado:RigadoCellular;1": {
+    "displayName": {
+      "en": "Rigado Cellular"
+    }
+  },
+  "dtmi:rigado:RS40OccupancySensor;1": {
+    "displayName": {
+      "en": "RS40 Occupancy Sensor"
+    }
+  },
+  "dtmi:rigado:RS40OccupancySensor;2": {
+    "displayName": {
+      "en": "RS40 Occupancy Sensor"
+    }
+  },
+  "dtmi:rigado:RS40OccupancySensor;3": {
+    "displayName": {
+      "en": "RS40 Occupancy Sensor"
+    }
+  },
+  "dtmi:rigado:RuuviTag;1": {
+    "displayName": {
+      "en": "RuuviTag"
+    }
+  },
+  "dtmi:rigado:RuuviTag;2": {
+    "displayName": {
+      "en": "RuuviTag"
+    }
+  },
+  "dtmi:rigado:S1Sensor;1": {
+    "displayName": {
+      "en": "S1 Sensor"
+    }
+  },
+  "dtmi:rigado:S1Sensor;2": {
+    "displayName": {
+      "en": "S1 Sensor"
+    }
+  },
+  "dtmi:Roseek:Cheetah1;1": {
+    "displayName": "Roseek-Cheetah1"
+  },
+  "dtmi:siskon:BarcodeReader;1": {
+    "displayName": "BarcodeReader",
+    "description": "Reports current barcode and provides desired barcode control."
+  },
+  "dtmi:SPARK:UPSGWS01;1": {
+    "displayName": "SPARK-UPSGWS01"
+  },
+  "dtmi:Synnex:faceRecognition;1": {
+    "displayName": "FaceRecognition",
+    "description": "Report the result of the face recognition and access control information."
+  },
+  "dtmi:Synnex:faceRecognition;2": {
+    "displayName": "FaceRecognition",
+    "description": "Report the result of the face recognition and access control information."
+  },
+  "dtmi:Synnex:LinuxDeviceInfo;1": {
+    "displayName": "General Device Information (Linux)"
+  },
+  "dtmi:Synnex:PIRmotion_sensor;1": {
+    "displayName": "PIR Motion Sensor"
+  },
+  "dtmi:Synnex:WindowsDeviceInfo;1": {
+    "displayName": "General Device Information (Windows)"
+  },
+  "dtmi:sysinno:iaeris1;1": {
+    "displayName": "Azure Sphere iAeris1 Detector",
+    "description": "iAeris is a series"
+  },
+  "dtmi:sysinno:iaeris1;2": {
+    "displayName": "Azure Sphere iAeris1 Detector",
+    "description": "iAeris is a series"
+  },
+  "dtmi:sysinno:iaeris1;3": {
+    "displayName": "Azure Sphere iAeris1 Detector",
+    "description": "iAeris is a series"
+  },
+  "dtmi:TED:E1000_iBS01H;1": {
+    "displayName": "E1000_iBS01H"
+  },
+  "dtmi:TED:E1000_iBS02PIR2;1": {
+    "displayName": "E1000_iBS02PIR2"
+  },
+  "dtmi:TED:iBS01H;1": {
+    "displayName": "iBS01H"
+  },
+  "dtmi:TED:iBS02PIR2;1": {
+    "displayName": "iBS02PIR2"
+  },
+  "dtmi:TED:X1000_iBS01H;1": {
+    "displayName": "X1000_iBS01H"
+  },
+  "dtmi:TED:X1000_iBS02PIR2;1": {
+    "displayName": "X1000_iBS02PIR2"
+  },
+  "dtmi:ust:tagu310;1": {
+    "displayName": "tagu310",
+    "description": "Device information packet."
+  },
+  "dtmi:via:Driverecorder;2": {
+    "displayName": "Driverecorder",
+    "description": "Reports current GPS location and system state."
+  },
+  "dtmi:via:Thermostat;2": {
+    "displayName": "Thermostat",
+    "description": "Reports current temperature and provides desired temperature control."
+  },
+  "dtmi:azure:DeviceManagement:DeviceInformation;1": {
+    "displayName": "Device Information"
+  },
+  "dtmi:azurertos:devkit:gsg;1": {
+    "displayName": "Getting Started Guide",
+    "description": "Example model for the Azure RTOS Getting Started Guides"
+  },
+  "dtmi:azurertos:devkit:gsgmqtt;1": {
+    "displayName": "Getting Started Guide for MQTT",
+    "description": "Example model for the Azure RTOS Getting Started Guides"
+  },
+  "dtmi:azurertos:devkit:gsgmxchip;1": {
+    "displayName": "MXCHIP Getting Started Guide",
+    "description": "Example model for the Azure RTOS MXCHIP Getting Started Guide"
+  },
+  "dtmi:benq:product:ifp_cp_series;1": {
+    "displayName": "BenQ IFP CP Series",
+    "description": "BenQ IFP CP Series capability model."
+  },
+  "dtmi:benq:product:ops_ie_series;1": {
+    "displayName": "BenQ OPS IE Series",
+    "description": "BenQ OPS IE Series capability model."
+  },
+  "dtmi:benq:product:runtimeInfo;1": {
+    "displayName": {
+      "en": "BenQ runtime information"
+    }
+  },
+  "dtmi:com:deviceworx:xtag_ble_acc;1": {
+    "displayName": "DeviceWorx xTAG BLE Acceleration Sensor"
+  },
+  "dtmi:com:deviceworx:xtag_usb_acc;1": {
+    "displayName": "DeviceWorx xTAG USB Acceleration Sensor"
+  },
+  "dtmi:com:example:TemperatureController;1": {
+    "displayName": "Temperature Controller",
+    "description": "Device with two thermostats and remote reboot."
+  },
+  "dtmi:com:example:TemperatureController;2": {
+    "displayName": {
+      "en": "Temperature Controller"
+    }
+  },
+  "dtmi:com:example:Thermostat;1": {
+    "displayName": "Thermostat",
+    "description": "Reports current temperature and provides desired temperature control."
+  },
+  "dtmi:com:example:Thermostat;2": {
+    "displayName": "Thermostat",
+    "description": "Reports current temperature and provides desired temperature control."
+  },
+  "dtmi:com:hms_networks:Ewon_Flexy_Azure_Connector_Basic;1": {
+    "displayName": "Ewon_Flexy_Azure_Connector_Basic"
+  },
+  "dtmi:com:hms_networks:Ewon_Flexy_Azure_Connector_Blank;1": {
+    "displayName": "Ewon_Flexy_Azure_Connector_Blank"
+  },
+  "dtmi:com:hms_networks:Ewon_Flexy_Azure_Connector_Starter;1": {
+    "displayName": "Ewon_Flexy_Azure_Connector_Starter"
+  },
+  "dtmi:com:Microchip:PIC_IoT_WM;1": {
+    "displayName": "PIC-IoT WM",
+    "description": "Reports temperature, light intensity, and states of the 2 buttons \u0026 4 LEDs.  Provides ability to turn on/off any of the 4 LEDs."
+  },
+  "dtmi:com:Octonion:SmartEdgeAgileDevice;1": {
+    "displayName": "SmartEdgeAgile",
+    "description": "Multi sensor IoT device"
+  },
+  "dtmi:compal:pixsee:babycam;1": {
+    "displayName": "pixsee",
+    "description": "pixsee"
+  },
+  "dtmi:compal:pixsee:babycam;2": {
+    "displayName": "pixsee",
+    "description": "pixsee"
+  },
+  "dtmi:compal:pixsee:environmentSettings;1": {
+    "displayName": "environmentSettings",
+    "description": "environment"
+  },
+  "dtmi:compal:pixsee:environmentSettings;2": {
+    "displayName": "environmentSettings",
+    "description": "environment"
+  },
+  "dtmi:compal:pixsee:indicatorState;1": {
+    "displayName": "indicatorState",
+    "description": "Indicator state"
+  },
+  "dtmi:compal:pixsee:indicatorState;2": {
+    "displayName": "indicatorState",
+    "description": "Indicator state"
+  },
+  "dtmi:compal:pixsee:smartDetection_area;1": {
+    "displayName": "smartDetection_area",
+    "description": "Area detection"
+  },
+  "dtmi:compal:pixsee:smartDetection_area;2": {
+    "displayName": "smartDetection_area",
+    "description": "Area detection"
+  },
+  "dtmi:compal:pixsee:smartDetection_cry;1": {
+    "displayName": "smartDetection_cry",
+    "description": "Cry detection"
+  },
+  "dtmi:compal:pixsee:smartDetection_cry;2": {
+    "displayName": "smartDetection_cry",
+    "description": "Cry detection"
+  },
+  "dtmi:compal:pixsee:wifiSettings;1": {
+    "displayName": "Wifi setting",
+    "description": "wifiSettings"
+  },
+  "dtmi:MeshSystems:txs:blereader;1": {
+    "displayName": {
+      "en": "BLE Reader"
+    }
+  },
+  "dtmi:MeshSystems:txs:cellular;1": {
+    "displayName": {
+      "en": "Cellular"
+    }
+  },
+  "dtmi:MeshSystems:txs:location;1": {
+    "displayName": {
+      "en": "Location"
+    }
+  },
+  "dtmi:MeshSystems:txs:modbus;1": {
+    "displayName": {
+      "en": "Modbus"
+    }
+  },
+  "dtmi:MeshSystems:txs:per;1": {
+    "displayName": {
+      "en": "Peripherals"
+    }
+  },
+  "dtmi:MeshSystems:tXs:SensorSync;1": {
+    "displayName": {
+      "en": "Valentine"
+    }
+  },
+  "dtmi:mydevicesinc:advantech:wise2410na;1": {
+    "displayName": "Advantech WISE Vibration",
+    "description": "Vibration \u0026 Temperature Sensor"
+  },
+  "dtmi:mydevicesinc:dragino:lht65;1": {
+    "displayName": "Dragino LHT65 Temperature and Humidity Sensor",
+    "description": "Temperature/Humidity Sensor"
+  },
+  "dtmi:mydevicesinc:globalsat:lt100e_tracker;1": {
+    "displayName": "GlobalSat LT-100E Tracker",
+    "description": "GPS Tracker"
+  },
+  "dtmi:mydevicesinc:lansitec:ble_gateway;1": {
+    "displayName": "Lansitec LoRaWAN BLE Gateway",
+    "description": "Badge Bluetooth Gateway"
+  },
+  "dtmi:mydevicesinc:lansitec:solar_bluetooth_gateway;1": {
+    "displayName": "Lansitec Solar LoRaWAN BLE Gateway",
+    "description": "Badge Bluetooth Gateway"
+  },
+  "dtmi:mydevicesinc:mydevices:mdpanic;1": {
+    "displayName": "MD Panic",
+    "description": "MD Panic"
+  },
+  "dtmi:mydevicesinc:mydevices:mdpanic;2": {
+    "displayName": "MD Panic",
+    "description": "MD Panic"
+  },
+  "dtmi:mydevicesinc:ursalink:am100;1": {
+    "displayName": "Ursalink AM100 Ambiance Monitoring Sensor",
+    "description": "Ambiance Monitoring"
+  },
+  "dtmi:mydevicesinc:ursalink:am102;1": {
+    "displayName": "Ursalink AM102 Ambiance Monitoring Sensor",
+    "description": "Ambiance Monitoring"
+  },
+  "dtmi:Nexcom:Nise50:Xcare;1": {
+    "displayName": "Xcare for Nise50",
+    "description": "Reports Nise50 about system information and provides desired system control."
+  },
+  "dtmi:Nexcom:Nise51:Xcare;1": {
+    "displayName": "Xcare for Nise51",
+    "description": "Reports Nise51 about system information and provides desired system control."
+  },
+  "dtmi:Nexcom:Nise52:Xcare;1": {
+    "displayName": "Xcare for Nise52",
+    "description": "Reports Nise52 about system information and provides desired system control."
+  },
+  "dtmi:rigado:interfaces:iotDevice;1": {
+    "displayName": {
+      "en": "IoT Device"
+    }
+  },
+  "dtmi:seeedkk:wioterminal:wioterminal_aziot_example;1": {
+    "displayName": "Seeed Wio Terminal"
+  },
+  "dtmi:seeedkk:wioterminal:wioterminal_aziot_example;2": {
+    "displayName": "Seeed Wio Terminal"
+  },
+  "dtmi:seeedkk:wioterminal:wioterminal_aziot_example;3": {
+    "displayName": "Seeed Wio Terminal"
+  },
+  "dtmi:seeedkk:wioterminal:wioterminal_aziot_example;4": {
+    "displayName": "Seeed Wio Terminal"
+  },
+  "dtmi:seeedkk:wioterminal:wioterminal_aziot_example;5": {
+    "displayName": "Seeed Wio Terminal",
+    "description": {
+      "en": "X,Y,Z-axis, brightness and button click polling result. Buzzer can be beeped by settings on cloud.",
+      "ja": "\u52A0\u901F\u5EA6X,Y,Z\u3068\u5149\u91CF\u3092\u5B9A\u671F\u7684\u306B\u901A\u77E5\u3057\u307E\u3059\u3002\u307E\u305F\u3001\u53F3\u3001\u4E2D\u592E\u3001\u5DE6\u30DC\u30BF\u30F3\u306E\u30AF\u30EA\u30C3\u30AF\u3082\u901A\u77E5\u3057\u307E\u3059\u3002\u30AF\u30E9\u30A6\u30C9\u304B\u3089\u306E\u6307\u793A\u3067\u30D6\u30B6\u30FC\u304C\u9CF4\u308A\u307E\u3059\u3002"
+    }
+  },
+  "dtmi:seeedkk:wioterminal:wioterminal_co2checker;1": {
+    "displayName": "CO2 Checker - Seeed Wio Terminal"
+  },
+  "dtmi:telit:bravo:DeviceCommand;1": {
+    "displayName": "DeviceCommandInterfaces",
+    "description": "Provides functionality to send a command and receive a response"
+  },
+  "dtmi:telit:bravo:DeviceComponent;1": {
+    "displayName": "TelitBravoDeviceModel",
+    "description": "Provides functionality to report sensors and signal strenght information, commands and device properties"
+  },
+  "dtmi:telit:bravo:EnvironmentSensor;1": {
+    "displayName": "BravoME910SensorInterfaces",
+    "description": "Provides functionality to report the bravo Device environment Sensor data"
+  },
+  "dtmi:telit:bravo:RotationSensor;1": {
+    "displayName": "BravoME910SensorInterfaces",
+    "description": "Reports the bravo Device environment Rotation Data information"
+  },
+  "dtmi:telit:common:TelitDeviceInformation;1": {
+    "displayName": "BravoModuleInfo",
+    "description": "Provides functionality to report Bravo Module specific information"
+  },
+  "dtmi:telit:common:TelitDeviceManagement;1": {
+    "displayName": "TelitDeviceSensorInterfaces",
+    "description": "Reports the telit Device Signal strength information"
+  },
+  "dtmi:com:example:azurertos:gsg;1": {
+    "displayName": "Getting Started Guide",
+    "description": "Example model for the Azure RTOS Getting Started Guides"
+  },
+  "dtmi:com:example:azuresphere:labmonitor;1": {
+    "displayName": "Learning Path Lab Monitor"
+  },
+  "dtmi:com:example:azuresphere:sampledevice;1": {
+    "displayName": {
+      "en": "Azure Sphere Sample Device"
+    }
+  },
+  "dtmi:jp:co:covia:Accelerometer;2": {
+    "displayName": "Accelerometer"
+  },
+  "dtmi:jp:co:covia:ActyG3;2": {
+    "displayName": "Acty-G3"
+  },
+  "dtmi:jp:co:covia:Gyroscope;2": {
+    "displayName": "Gyroscope"
+  },
+  "dtmi:jp:co:covia:Location;2": {
+    "displayName": "Location"
+  },
+  "dtmi:jp:co:covia:RemoteControl;1": {
+    "displayName": "RemoteControl",
+    "description": ""
+  },
+  "dtmi:jp:co:covia:RemoteControl;2": {
+    "displayName": "RemoteControl"
+  },
+  "dtmi:uk:co:clearwatercontrols:akp;1": {
+    "displayName": "Advanced Keypad"
+  },
+  "dtmi:uk:co:clearwatercontrols:configurationCommands;1": {
+    "displayName": "Configuration Commands"
+  },
+  "dtmi:uk:co:clearwatercontrols:pumpCommands;1": {
+    "displayName": "Pump Commands"
+  },
+  "dtmi:uk:co:clearwatercontrols:akp:properties;1": {
+    "displayName": "Advanced Keypad Properties"
+  },
+  "dtmi:uk:co:clearwatercontrols:deraggerPlus:commands;1": {
+    "displayName": "Deragger\u002B Commands"
+  },
+  "dtmi:uk:co:clearwatercontrols:deraggerPlus:telemetry;1": {
+    "displayName": "Deragger\u002B Telemetry"
+  }
+}
