@@ -2,7 +2,9 @@
 using Microsoft.Azure.DigitalTwins.Parser;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
+using System.Text;
 
 namespace Microsoft.IoT.ModelsRepository.CommandLine
 {
@@ -51,6 +53,15 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
 
             Console.Error.WriteLine(debug);
             Console.ResetColor();
+        }
+
+        public static void WriteToFile(string filePath, string contents)
+        {
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                UTF8Encoding utf8WithoutBom = new UTF8Encoding(false);
+                File.WriteAllText(filePath, contents, utf8WithoutBom);
+            }
         }
     }
 }

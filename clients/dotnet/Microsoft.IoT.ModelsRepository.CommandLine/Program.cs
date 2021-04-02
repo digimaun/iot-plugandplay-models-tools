@@ -25,6 +25,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             root.Add(BuildExportCommand());
             root.Add(BuildValidateCommand());
             root.Add(BuildImportModelCommand());
+            root.Add(BuildRepoCommandSet());
 
             root.AddGlobalOption(CommonOptions.Debug);
             root.AddGlobalOption(CommonOptions.Silent);
@@ -96,7 +97,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             };
 
             validateModelCommand.Description =
-                "Validates a model using the DTDL model parser & resolver. When validating a single model object " +
+                "Validates the DTDL model contained in a file. When validating a single model object " +
                 "the target repository is used for model resolution. When validating an array of models only the array " +
                 "contents is used for resolution.";
 
@@ -121,10 +122,36 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                 CommonOptions.Strict,
             };
             importModelCommand.Description =
-                "Imports models from a model file into the local repository. The local repo is used for model resolution. ";
+                "Imports models from a model file into the local repository. The local repository is used for model resolution.";
             importModelCommand.Handler = CommandHandler.Create<FileInfo, DirectoryInfo, ModelDependencyResolution, bool>(Handlers.Import);
 
             return importModelCommand;
+        }
+
+        private static Command BuildRepoCommandSet()
+        {
+            Command repoCommandRoot = new Command("repo")
+            {
+                Description = "Command group with operations that support managing a models repository.",
+            };
+
+            repoCommandRoot.Add(BuildRepoIndexCommand());
+
+            return repoCommandRoot;
+        }
+
+        private static Command BuildRepoIndexCommand()
+        {
+            Command repoIndexCommand= new Command("index")
+            {
+                CommonOptions.LocalRepo,
+                CommonOptions.Output
+            };
+            repoIndexCommand.Description =
+                "Produce an index file from the state of a target local models repository.";
+            repoIndexCommand.Handler = CommandHandler.Create<DirectoryInfo, string>(Handlers.RepoIndex);
+
+            return repoIndexCommand;
         }
     }
 }

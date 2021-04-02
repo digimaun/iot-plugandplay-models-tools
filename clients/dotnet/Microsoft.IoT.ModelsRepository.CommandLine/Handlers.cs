@@ -21,6 +21,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             public const int InvalidArguments = 1;
             public const int ValidationError = 2;
             public const int ResolutionError = 3;
+            public const int ProcessingError = 4;
         }
 
         public static async Task<int> Export(string dtmi, FileInfo modelFile, string repo, ModelDependencyResolution deps, string output)
@@ -59,12 +60,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                 string jsonSerialized = await streamReader.ReadToEndAsync();
 
                 Outputs.WriteOut(jsonSerialized);
-
-                if (!string.IsNullOrEmpty(output))
-                {
-                    UTF8Encoding utf8WithoutBom = new UTF8Encoding(false);
-                    await File.WriteAllTextAsync(output, jsonSerialized, utf8WithoutBom);
-                }
+                Outputs.WriteToFile(output, jsonSerialized);
             }
             catch (RequestFailedException requestEx)
             {
@@ -276,6 +272,49 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                 Outputs.WriteError($"Parsing json-ld content. Details: {jsonEx.Message}");
                 return ReturnCodes.InvalidArguments;
             }
+
+            return ReturnCodes.Success;
+        }
+
+        public static int RepoIndex(DirectoryInfo localRepo, string output)
+        {
+            if (localRepo == null)
+            {
+                localRepo = new DirectoryInfo(Path.GetFullPath("."));
+            }
+
+            var parsing = new Parsing(null);
+            var modelIndex = new ModelIndex();
+
+            foreach (string file in Directory.EnumerateFiles(localRepo.FullName, "*.json",
+                new EnumerationOptions { RecurseSubdirectories = true }))
+            {
+                if (file.ToLower().EndsWith("expanded.json")){
+                    continue;
+                }
+
+                try
+                {
+                    var modelFile = new FileInfo(file);
+                    ModelIndexEntry indexEntry = parsing.ParseModelFileForIndex(modelFile);
+                    modelIndex.Add(indexEntry.Dtmi, indexEntry);
+                }
+                catch(Exception e)
+                {
+                    Outputs.WriteError($"Failure processing model file: {file}, {e.Message}");
+                    return ReturnCodes.ProcessingError;
+                }
+            }
+
+            var serializeOptions = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                IgnoreNullValues = true,
+            };
+
+            string indexJsonString = JsonSerializer.Serialize(modelIndex, serializeOptions);
+            Outputs.WriteOut(indexJsonString);
+            Outputs.WriteToFile(output, indexJsonString);
 
             return ReturnCodes.Success;
         }

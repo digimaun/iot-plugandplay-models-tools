@@ -14,7 +14,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             {
                 Option<string> dtmiOption = new Option<string>(
                     alias: "--dtmi",
-                    description: "Digital Twin Model Identifier. Example: \"dtmi:com:example:Thermostat;1\" ");
+                    description: "Digital Twin Model Identifier. Example: \"dtmi:com:example:Thermostat;1\".");
 
                 dtmiOption.AddValidator(option =>
                 {
@@ -41,7 +41,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             {
                 Option<string> repoOption = new Option<string>(
                     alias: "--repo",
-                    description: "Model Repository location. Supports remote endpoint or local directory. ",
+                    description: "Models repository location. Supports remote endpoint or local directory.",
                     getDefaultValue: () => new ModelsRepositoryClient().RepositoryUri.AbsoluteUri);
 
                 return repoOption;
@@ -54,7 +54,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             {
                 return new Option<DirectoryInfo>(
                   alias: "--local-repo",
-                  description: "Local Model Repository path. If no path is provided the current working directory is used. ",
+                  description: "Local models repository path. If no path is provided the current working directory is used.",
                   getDefaultValue: () => null)
                 {
                     Argument = new Argument<DirectoryInfo>()
@@ -80,7 +80,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             {
                 return new Option<FileInfo>(
                     aliases: new string[] { "-m", "--model-file" },
-                    description: "Path to file containing Digital Twins model content. ")
+                    description: "Path to file containing Digital Twins model content.")
                 {
                     Argument = new Argument<FileInfo>().ExistingOnly()
                 };

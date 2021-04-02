@@ -89,5 +89,35 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
         {
             return GetRootId(File.ReadAllText(fileInfo.FullName));
         }
+
+        public ModelIndexEntry ParseModelFileForIndex(FileInfo fileInfo)
+        {
+            string modelText = File.ReadAllText(fileInfo.FullName);
+
+            using JsonDocument document = JsonDocument.Parse(modelText);
+            JsonElement root = document.RootElement;
+
+            object description = null;
+            object displayName = null;
+
+            if (root.TryGetProperty("description", out JsonElement descriptionElement))
+            {
+                description = JsonSerializer.Deserialize<object>(descriptionElement.GetRawText());
+            }
+
+            if (root.TryGetProperty("displayName", out JsonElement displaneNameElement))
+            {
+                displayName = JsonSerializer.Deserialize<object>(displaneNameElement.GetRawText());
+            }
+
+            var indexEntry = new ModelIndexEntry()
+            {
+                Dtmi = root.GetProperty("@id").GetString(),
+                Description = description,
+                DisplayName = displayName
+            };
+
+            return indexEntry;
+        }
     }
 }
