@@ -5,8 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Unicode;
 using System.Threading.Tasks;
 
 
@@ -289,7 +290,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             foreach (string file in Directory.EnumerateFiles(localRepo.FullName, "*.json",
                 new EnumerationOptions { RecurseSubdirectories = true }))
             {
-                if (file.ToLower().EndsWith("expanded.json")){
+                if (file.ToLower().EndsWith(".expanded.json")){
                     continue;
                 }
 
@@ -310,6 +311,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             {
                 WriteIndented = true,
                 IgnoreNullValues = true,
+                Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
             };
 
             string indexJsonString = JsonSerializer.Serialize(modelIndex, serializeOptions);

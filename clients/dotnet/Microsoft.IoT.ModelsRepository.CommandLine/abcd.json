@@ -1074,7 +1074,7 @@
     "displayName": "Seeed Wio Terminal",
     "description": {
       "en": "X,Y,Z-axis, brightness and button click polling result. Buzzer can be beeped by settings on cloud.",
-      "ja": "\u52A0\u901F\u5EA6X,Y,Z\u3068\u5149\u91CF\u3092\u5B9A\u671F\u7684\u306B\u901A\u77E5\u3057\u307E\u3059\u3002\u307E\u305F\u3001\u53F3\u3001\u4E2D\u592E\u3001\u5DE6\u30DC\u30BF\u30F3\u306E\u30AF\u30EA\u30C3\u30AF\u3082\u901A\u77E5\u3057\u307E\u3059\u3002\u30AF\u30E9\u30A6\u30C9\u304B\u3089\u306E\u6307\u793A\u3067\u30D6\u30B6\u30FC\u304C\u9CF4\u308A\u307E\u3059\u3002"
+      "ja": "加速度X,Y,Zと光量を定期的に通知します。また、右、中央、左ボタンのクリックも通知します。クラウドからの指示でブザーが鳴ります。"
     }
   },
   "dtmi:seeedkk:wioterminal:wioterminal_co2checker;1": {
