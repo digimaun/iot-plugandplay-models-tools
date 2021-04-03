@@ -12,8 +12,8 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
     {
         public static readonly string ParserVersion = FileVersionInfo.GetVersionInfo(typeof(ModelParser).Assembly.Location).ProductVersion;
         public static readonly string RepositoryClientVersion = FileVersionInfo.GetVersionInfo(typeof(ModelsRepositoryClient).Assembly.Location).ProductVersion;
-        public static readonly string CliVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
-        public static readonly string DebugHeader = $"dmr-client/{CliVersion} parser/{ParserVersion} resolver/{RepositoryClientVersion}";
+        public static readonly string CommandLineVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
+        public static readonly string DebugHeader = $"dmr-client/{CommandLineVersion} parser/{ParserVersion} sdk/{RepositoryClientVersion}";
 
         public static void WriteError(string msg)
         {

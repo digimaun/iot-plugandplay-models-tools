@@ -2,7 +2,6 @@
 using System.CommandLine;
 using System.CommandLine.Parsing;
 using System.IO;
-using System.Text.Json;
 
 namespace Microsoft.IoT.ModelsRepository.CommandLine
 {
@@ -146,29 +145,6 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                     alias: "--deps",
                     description: "Indicates how model dependencies should be resolved. ",
                     getDefaultValue: () => ModelDependencyResolution.Enabled);
-            }
-        }
-
-        public static JsonDocumentOptions DefaultJsonParseOptions
-        {
-            get
-            {
-                return new JsonDocumentOptions
-                {
-                    AllowTrailingCommas = true,
-                };
-            }
-        }
-
-        public static JsonSerializerOptions DefaultJsonSerializerOptions
-        {
-            get
-            {
-                return new JsonSerializerOptions
-                {
-                    AllowTrailingCommas = true,
-                    WriteIndented = true,
-                };
             }
         }
     }

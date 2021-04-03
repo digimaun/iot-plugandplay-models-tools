@@ -4,7 +4,9 @@ using Microsoft.IoT.ModelsRepository.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Unicode;
 
 namespace Microsoft.IoT.ModelsRepository.CommandLine
 {
@@ -100,14 +102,16 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             object description = null;
             object displayName = null;
 
+            JsonSerializerOptions options = DefaultJsonSerializerOptions;
+
             if (root.TryGetProperty("description", out JsonElement descriptionElement))
             {
-                description = JsonSerializer.Deserialize<object>(descriptionElement.GetRawText());
+                description = JsonSerializer.Deserialize<object>(descriptionElement.GetRawText(), options);
             }
 
             if (root.TryGetProperty("displayName", out JsonElement displaneNameElement))
             {
-                displayName = JsonSerializer.Deserialize<object>(displaneNameElement.GetRawText());
+                displayName = JsonSerializer.Deserialize<object>(displaneNameElement.GetRawText(), options);
             }
 
             var indexEntry = new ModelIndexEntry()
@@ -118,6 +122,32 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             };
 
             return indexEntry;
+        }
+
+        public static JsonSerializerOptions DefaultJsonSerializerOptions
+        {
+            get
+            {
+                return new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    IgnoreNullValues = true,
+                    AllowTrailingCommas = true,
+                    // DTDL supports these characters.
+                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                };
+            }
+        }
+
+        public static JsonDocumentOptions DefaultJsonParseOptions
+        {
+            get
+            {
+                return new JsonDocumentOptions
+                {
+                    AllowTrailingCommas = true,
+                };
+            }
         }
     }
 }

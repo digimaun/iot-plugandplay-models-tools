@@ -5,9 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Encodings.Web;
 using System.Text.Json;
-using System.Text.Unicode;
 using System.Threading.Tasks;
 
 
@@ -53,9 +51,9 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                 string normalizedList = string.Join(',', resultList);
                 string payload = $"[{normalizedList}]";
 
-                using JsonDocument document = JsonDocument.Parse(payload, CommonOptions.DefaultJsonParseOptions);
+                using JsonDocument document = JsonDocument.Parse(payload, Parsing.DefaultJsonParseOptions);
                 using MemoryStream stream = new MemoryStream();
-                await JsonSerializer.SerializeAsync(stream, document.RootElement, CommonOptions.DefaultJsonSerializerOptions);
+                await JsonSerializer.SerializeAsync(stream, document.RootElement, Parsing.DefaultJsonSerializerOptions);
                 stream.Position = 0;
                 using StreamReader streamReader = new StreamReader(stream);
                 string jsonSerialized = await streamReader.ReadToEndAsync();
@@ -307,16 +305,54 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                 }
             }
 
-            var serializeOptions = new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                IgnoreNullValues = true,
-                Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
-            };
-
-            string indexJsonString = JsonSerializer.Serialize(modelIndex, serializeOptions);
+            string indexJsonString = JsonSerializer.Serialize(modelIndex, Parsing.DefaultJsonSerializerOptions);
             Outputs.WriteOut(indexJsonString);
             Outputs.WriteToFile(output, indexJsonString);
+
+            return ReturnCodes.Success;
+        }
+
+        public static async Task<int> RepoExpand(DirectoryInfo localRepo)
+        {
+            if (localRepo == null)
+            {
+                localRepo = new DirectoryInfo(Path.GetFullPath("."));
+            }
+
+            var parsing = new Parsing(localRepo.FullName);
+            ModelsRepositoryClient repositoryClient = parsing.GetRepositoryClient();
+
+            foreach (string file in Directory.EnumerateFiles(localRepo.FullName, "*.json",
+                new EnumerationOptions { RecurseSubdirectories = true }))
+            {
+                if (file.ToLower().EndsWith(".expanded.json"))
+                {
+                    continue;
+                }
+
+                var modelFile = new FileInfo(file);
+                string dtmi = parsing.GetRootId(modelFile);
+
+                if (string.IsNullOrEmpty(dtmi)){
+                    continue;
+                }
+
+                IDictionary<string, string> result = await repositoryClient.GetModelsAsync(dtmi);
+                List<string> resultList = result.Values.ToList(); // TODO: Do right.
+                string normalizedList = string.Join(',', resultList);
+                string payload = $"[{normalizedList}]";
+
+                using JsonDocument document = JsonDocument.Parse(payload, Parsing.DefaultJsonParseOptions);
+                using MemoryStream stream = new MemoryStream();
+                await JsonSerializer.SerializeAsync(stream, document.RootElement, Parsing.DefaultJsonSerializerOptions);
+                stream.Position = 0;
+                using StreamReader streamReader = new StreamReader(stream);
+                string jsonSerialized = await streamReader.ReadToEndAsync();
+
+                string createPath = DtmiConventions.GetModelUri(dtmi, new Uri(localRepo.FullName), true).AbsolutePath;
+                Outputs.WriteToFile(createPath, jsonSerialized);
+                Outputs.WriteOut($"Created: {createPath}");
+            }
 
             return ReturnCodes.Success;
         }
