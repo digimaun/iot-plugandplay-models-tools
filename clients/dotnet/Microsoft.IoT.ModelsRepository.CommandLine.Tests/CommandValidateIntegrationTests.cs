@@ -206,7 +206,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine.Tests
                 $"validate --model-file \"{qualifiedModelFilePath}\" " +
                 $"--repo \"{TestHelpers.TestLocalModelRepository}\"");
 
-            Assert.AreEqual(Handlers.ReturnCodes.ValidationError, returnCode);
+            Assert.AreEqual(Handlers.ReturnCodes.InvalidArguments, returnCode);
             Assert.True(standardError.Contains("Error: No models to validate."));
         }
 

@@ -40,12 +40,10 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine.Tests
             Assert.True(standardOut.Contains("- Validating models conform to DTDL..."));
             Assert.True(standardOut.Contains($"- Importing model \"{expectedDtmi}\"..."));
 
-            Parsing parsing = new Parsing(null);
-
             FileInfo modelFile = new FileInfo(Path.GetFullPath(testImportRepo.FullName + "/" + modelFilePath));
             Assert.True(modelFile.Exists);
             DateTime lastWriteTimeUtc = modelFile.LastWriteTimeUtc;
-            Assert.AreEqual(expectedDtmi, parsing.GetRootId(modelFile));
+            Assert.AreEqual(expectedDtmi, ParsingUtils.GetRootId(modelFile));
 
             if (strict)
             {
@@ -87,13 +85,12 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine.Tests
             Assert.False(standardError.Contains("Error:"));
             Assert.True(standardOut.Contains("- Validating models conform to DTDL..."));
 
-            Parsing parsing = new Parsing(null);
             for (int i = 0; i < dtmis.Length; i++)
             {
                 Assert.True(standardOut.Contains($"- Importing model \"{dtmis[i]}\"..."));
                 FileInfo modelFile = new FileInfo(Path.GetFullPath(testImportRepo.FullName + "/" + paths[i]));
                 Assert.True(modelFile.Exists);
-                Assert.AreEqual(dtmis[i], parsing.GetRootId(modelFile));
+                Assert.AreEqual(dtmis[i], ParsingUtils.GetRootId(modelFile));
             }
         }
 

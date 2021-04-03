@@ -1,5 +1,4 @@
 ﻿using Azure.Core.Diagnostics;
-using Azure.IoT.ModelsRepository;
 using System.CommandLine;
 using System.CommandLine.Builder;
 using System.CommandLine.Invocation;
@@ -64,21 +63,18 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
 
         private static Command BuildExportCommand()
         {
-            var modelFileOpt = CommonOptions.ModelFile;
-            modelFileOpt.IsHidden = true;
-
             Command exportModelCommand = new Command("export")
             {
                 CommonOptions.Dtmi,
-                modelFileOpt,
+                CommonOptions.ModelFile,
                 CommonOptions.Repo,
-                CommonOptions.Deps,
                 CommonOptions.Output
             };
 
             exportModelCommand.Description =
-                "Retrieve a model and its dependencies by dtmi using the target repository for model resolution.";
-            exportModelCommand.Handler = CommandHandler.Create<string, FileInfo, string, ModelDependencyResolution, string>(Handlers.Export);
+                "Exports a model producing the model and its dependency chain in an expanded format. " +
+                "The target repository is used for model resolution.";
+            exportModelCommand.Handler = CommandHandler.Create<string, FileInfo, string, string>(Handlers.Export);
 
             return exportModelCommand;
         }
@@ -92,7 +88,6 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             {
                 modelFileOption,
                 CommonOptions.Repo,
-                CommonOptions.Deps,
                 CommonOptions.Strict,
             };
 
@@ -102,7 +97,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                 "contents is used for resolution.";
 
             validateModelCommand.Handler =
-                CommandHandler.Create<FileInfo, string, ModelDependencyResolution, bool>(Handlers.Validate);
+                CommandHandler.Create<FileInfo, string, bool>(Handlers.Validate);
 
             return validateModelCommand;
         }
@@ -111,19 +106,16 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
         {
             var modelFileOption = CommonOptions.ModelFile;
             modelFileOption.IsRequired = true; // Option is required for this command
-            var depsResOption = CommonOptions.Deps;
-            depsResOption.IsHidden = true; // Option has limited value for this command
 
             Command importModelCommand = new Command("import")
             {
                 modelFileOption,
                 CommonOptions.LocalRepo,
-                depsResOption,
                 CommonOptions.Strict,
             };
             importModelCommand.Description =
                 "Imports models from a model file into the local repository. The local repository is used for model resolution.";
-            importModelCommand.Handler = CommandHandler.Create<FileInfo, DirectoryInfo, ModelDependencyResolution, bool>(Handlers.Import);
+            importModelCommand.Handler = CommandHandler.Create<FileInfo, DirectoryInfo, bool>(Handlers.Import);
 
             return importModelCommand;
         }

@@ -23,9 +23,9 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             public const int ProcessingError = 4;
         }
 
-        public static async Task<int> Export(string dtmi, FileInfo modelFile, string repo, ModelDependencyResolution deps, string output)
+        public static async Task<int> Export(string dtmi, FileInfo modelFile, string repo, string output)
         {
-            //check that we have either model file or dtmi
+            // Check that we have either model file or dtmi
             if (string.IsNullOrWhiteSpace(dtmi) && modelFile == null)
             {
                 string invalidArgMsg = "Please specify a value for --dtmi";
@@ -33,12 +33,13 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                 return ReturnCodes.InvalidArguments;
             }
 
-            Parsing parsing = new Parsing(repo);
+            var repoProvider = new RepoProvider(repo);
+
             try
             {
                 if (string.IsNullOrWhiteSpace(dtmi))
                 {
-                    dtmi = parsing.GetRootId(modelFile);
+                    dtmi = ParsingUtils.GetRootId(modelFile);
                     if (string.IsNullOrWhiteSpace(dtmi))
                     {
                         Outputs.WriteError("Model is missing root @id");
@@ -46,20 +47,11 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                     }
                 }
 
-                IDictionary<string, string> result = await parsing.GetRepositoryClient(dependencyResolution: deps).GetModelsAsync(dtmi);
-                List<string> resultList = result.Values.ToList();
-                string normalizedList = string.Join(',', resultList);
-                string payload = $"[{normalizedList}]";
+                List<string> expandedModel = await repoProvider.ExpandModel(dtmi);
+                string formattedJson = Outputs.FormatExpandedListAsJson(expandedModel);
 
-                using JsonDocument document = JsonDocument.Parse(payload, Parsing.DefaultJsonParseOptions);
-                using MemoryStream stream = new MemoryStream();
-                await JsonSerializer.SerializeAsync(stream, document.RootElement, Parsing.DefaultJsonSerializerOptions);
-                stream.Position = 0;
-                using StreamReader streamReader = new StreamReader(stream);
-                string jsonSerialized = await streamReader.ReadToEndAsync();
-
-                Outputs.WriteOut(jsonSerialized);
-                Outputs.WriteToFile(output, jsonSerialized);
+                Outputs.WriteOut(formattedJson);
+                Outputs.WriteToFile(output, formattedJson);
             }
             catch (RequestFailedException requestEx)
             {
@@ -75,19 +67,18 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             return ReturnCodes.Success;
         }
 
-        public static async Task<int> Validate(FileInfo modelFile, string repo, ModelDependencyResolution deps, bool strict)
+        public static async Task<int> Validate(FileInfo modelFile, string repo, bool strict)
         {
-            Parsing parsing = new Parsing(repo);
-
             try
             {
-                FileExtractResult extractResult = parsing.ExtractModels(modelFile);
+                RepoProvider repoProvider = new RepoProvider(repo);
+                FileExtractResult extractResult = ParsingUtils.ExtractModels(modelFile);
                 List<string> models = extractResult.Models;
 
                 if (models.Count == 0)
                 {
                     Outputs.WriteError("No models to validate.");
-                    return ReturnCodes.ValidationError;
+                    return ReturnCodes.InvalidArguments;
                 }
 
                 ModelParser parser;
@@ -105,7 +96,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                 }
                 else
                 {
-                    parser = parsing.GetParser(dependencyResolution: deps);
+                    parser = repoProvider.GetDtdlParser();
                 }
 
                 Outputs.WriteOut($"- Validating models conform to DTDL...");
@@ -120,8 +111,8 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                         return ReturnCodes.ValidationError;
                     }
 
-                    string id = parsing.GetRootId(models[0]);
-                    Outputs.WriteOut($"- Ensuring DTMIs namespace conformance for model \"{id}\"...");
+                    string dtmi = ParsingUtils.GetRootId(models[0]);
+                    Outputs.WriteOut($"- Ensuring DTMIs namespace conformance for model \"{dtmi}\"...");
                     List<string> invalidSubDtmis = Validations.EnsureSubDtmiNamespace(models[0]);
                     if (invalidSubDtmis.Count > 0)
                     {
@@ -131,7 +122,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                     }
 
                     // TODO: Evaluate changing how file path validation is invoked.
-                    if (Validations.IsRemoteEndpoint(repo))
+                    if (RepoProvider.IsRemoteEndpoint(repo))
                     {
                         Outputs.WriteError($"Model file path validation requires a local repository.");
                         return ReturnCodes.ValidationError;
@@ -189,19 +180,17 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             return ReturnCodes.Success;
         }
 
-        public static async Task<int> Import(FileInfo modelFile, DirectoryInfo localRepo, ModelDependencyResolution deps, bool strict)
+        public static async Task<int> Import(FileInfo modelFile, DirectoryInfo localRepo, bool strict)
         {
             if (localRepo == null)
             {
                 localRepo = new DirectoryInfo(Path.GetFullPath("."));
             }
 
-            Parsing parsing = new Parsing(localRepo.FullName);
-
             try
             {
-                ModelParser parser = parsing.GetParser(dependencyResolution: deps);
-                FileExtractResult extractResult = parsing.ExtractModels(modelFile);
+                RepoProvider repoProvider = new RepoProvider(localRepo.FullName);
+                FileExtractResult extractResult = ParsingUtils.ExtractModels(modelFile);
                 List<string> models = extractResult.Models;
 
                 if (models.Count == 0)
@@ -211,14 +200,15 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                 }
 
                 Outputs.WriteOut($"- Validating models conform to DTDL...");
+                ModelParser parser = repoProvider.GetDtdlParser();
                 await parser.ParseAsync(models);
 
                 if (strict)
                 {
                     foreach (string content in models)
                     {
-                        string id = parsing.GetRootId(content);
-                        Outputs.WriteOut($"- Ensuring DTMIs namespace conformance for model \"{id}\"...");
+                        string dtmi = ParsingUtils.GetRootId(content);
+                        Outputs.WriteOut($"- Ensuring DTMIs namespace conformance for model \"{dtmi}\"...");
                         List<string> invalidSubDtmis = Validations.EnsureSubDtmiNamespace(content);
                         if (invalidSubDtmis.Count > 0)
                         {
@@ -231,7 +221,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
 
                 foreach (string content in models)
                 {
-                    await ModelImporter.ImportAsync(content, localRepo);
+                    ModelImporter.Import(content, localRepo);
                 }
             }
             catch (ResolutionException resolutionEx)
@@ -282,7 +272,6 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                 localRepo = new DirectoryInfo(Path.GetFullPath("."));
             }
 
-            var parsing = new Parsing(null);
             var modelIndex = new ModelIndex();
 
             foreach (string file in Directory.EnumerateFiles(localRepo.FullName, "*.json",
@@ -292,10 +281,12 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                     continue;
                 }
 
+                Outputs.WriteDebug($"Processing: {file}");
+
                 try
                 {
                     var modelFile = new FileInfo(file);
-                    ModelIndexEntry indexEntry = parsing.ParseModelFileForIndex(modelFile);
+                    ModelIndexEntry indexEntry = ParsingUtils.ParseModelFileForIndex(modelFile);
                     modelIndex.Add(indexEntry.Dtmi, indexEntry);
                 }
                 catch(Exception e)
@@ -305,9 +296,9 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                 }
             }
 
-            string indexJsonString = JsonSerializer.Serialize(modelIndex, Parsing.DefaultJsonSerializerOptions);
-            Outputs.WriteOut(indexJsonString);
+            string indexJsonString = JsonSerializer.Serialize(modelIndex, ParsingUtils.DefaultJsonSerializerOptions);
             Outputs.WriteToFile(output, indexJsonString);
+            Outputs.WriteOut(indexJsonString);
 
             return ReturnCodes.Success;
         }
@@ -319,8 +310,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                 localRepo = new DirectoryInfo(Path.GetFullPath("."));
             }
 
-            var parsing = new Parsing(localRepo.FullName);
-            ModelsRepositoryClient repositoryClient = parsing.GetRepositoryClient();
+            var repoProvider = new RepoProvider(localRepo.FullName);
 
             foreach (string file in Directory.EnumerateFiles(localRepo.FullName, "*.json",
                 new EnumerationOptions { RecurseSubdirectories = true }))
@@ -331,26 +321,16 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                 }
 
                 var modelFile = new FileInfo(file);
-                string dtmi = parsing.GetRootId(modelFile);
+                string dtmi = ParsingUtils.GetRootId(modelFile);
 
                 if (string.IsNullOrEmpty(dtmi)){
                     continue;
                 }
-
-                IDictionary<string, string> result = await repositoryClient.GetModelsAsync(dtmi);
-                List<string> resultList = result.Values.ToList(); // TODO: Do right.
-                string normalizedList = string.Join(',', resultList);
-                string payload = $"[{normalizedList}]";
-
-                using JsonDocument document = JsonDocument.Parse(payload, Parsing.DefaultJsonParseOptions);
-                using MemoryStream stream = new MemoryStream();
-                await JsonSerializer.SerializeAsync(stream, document.RootElement, Parsing.DefaultJsonSerializerOptions);
-                stream.Position = 0;
-                using StreamReader streamReader = new StreamReader(stream);
-                string jsonSerialized = await streamReader.ReadToEndAsync();
+                List<string> expandedModel = await repoProvider.ExpandModel(dtmi);
+                string formattedJson = Outputs.FormatExpandedListAsJson(expandedModel);
 
                 string createPath = DtmiConventions.GetModelUri(dtmi, new Uri(localRepo.FullName), true).AbsolutePath;
-                Outputs.WriteToFile(createPath, jsonSerialized);
+                Outputs.WriteToFile(createPath, formattedJson);
                 Outputs.WriteOut($"Created: {createPath}");
             }
 

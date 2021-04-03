@@ -1,54 +1,20 @@
-﻿using Azure.IoT.ModelsRepository;
-using Microsoft.Azure.DigitalTwins.Parser;
-using Microsoft.IoT.ModelsRepository.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using System.Text.Unicode;
 
 namespace Microsoft.IoT.ModelsRepository.CommandLine
 {
-    internal class Parsing
+    internal class ParsingUtils
     {
-        private readonly string _repository;
-
-        public Parsing(string repository)
-        {
-            _repository = repository;
-        }
-
-        public ModelParser GetParser(ModelDependencyResolution dependencyResolution = ModelDependencyResolution.Enabled)
-        {
-            ModelsRepositoryClient client = GetRepositoryClient(dependencyResolution);
-            ModelParser parser = new ModelParser
-            {
-                DtmiResolver = client.ParserDtmiResolver
-            };
-            return parser;
-        }
-
-        public ModelsRepositoryClient GetRepositoryClient(ModelDependencyResolution dependencyResolution = ModelDependencyResolution.Enabled)
-        {
-            string repository = _repository;
-            if (Validations.IsRelativePath(repository))
-            {
-                repository = Path.GetFullPath(repository);
-            }
-
-            return new ModelsRepositoryClient(
-                new Uri(repository),
-                new ModelsRepositoryClientOptions(dependencyResolution: dependencyResolution));
-        }
-
-        public FileExtractResult ExtractModels(FileInfo modelsFile)
+        public static FileExtractResult ExtractModels(FileInfo modelsFile)
         {
             string modelsText = File.ReadAllText(modelsFile.FullName);
             return ExtractModels(modelsText);
         }
 
-        public FileExtractResult ExtractModels(string modelsText)
+        public static FileExtractResult ExtractModels(string modelsText)
         {
             List<string> result = new List<string>();
             using JsonDocument document = JsonDocument.Parse(modelsText);
@@ -71,7 +37,12 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             throw new ArgumentException($"Importing model file contents of kind {root.ValueKind} is not yet supported.");
         }
 
-        public string GetRootId(string modelText)
+        public static string GetRootId(FileInfo fileInfo)
+        {
+            return GetRootId(File.ReadAllText(fileInfo.FullName));
+        }
+
+        public static string GetRootId(string modelText)
         {
             using JsonDocument document = JsonDocument.Parse(modelText);
             JsonElement root = document.RootElement;
@@ -87,12 +58,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             return string.Empty;
         }
 
-        public string GetRootId(FileInfo fileInfo)
-        {
-            return GetRootId(File.ReadAllText(fileInfo.FullName));
-        }
-
-        public ModelIndexEntry ParseModelFileForIndex(FileInfo fileInfo)
+        public static ModelIndexEntry ParseModelFileForIndex(FileInfo fileInfo)
         {
             string modelText = File.ReadAllText(fileInfo.FullName);
 
