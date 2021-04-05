@@ -23,7 +23,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             public const int ProcessingError = 4;
         }
 
-        public static async Task<int> Export(string dtmi, FileInfo modelFile, string repo, string output)
+        public static async Task<int> Export(string dtmi, FileInfo modelFile, string repo, FileInfo outputFile)
         {
             // Check that we have either model file or dtmi
             if (string.IsNullOrWhiteSpace(dtmi) && modelFile == null)
@@ -51,7 +51,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                 string formattedJson = Outputs.FormatExpandedListAsJson(expandedModel);
 
                 Outputs.WriteOut(formattedJson);
-                Outputs.WriteToFile(output, formattedJson);
+                Outputs.WriteToFile(outputFile, formattedJson);
             }
             catch (RequestFailedException requestEx)
             {
@@ -265,7 +265,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             return ReturnCodes.Success;
         }
 
-        public static int RepoIndex(DirectoryInfo localRepo, string output)
+        public static int RepoIndex(DirectoryInfo localRepo, FileInfo outputFile)
         {
             if (localRepo == null)
             {
@@ -281,7 +281,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                     continue;
                 }
 
-                Outputs.WriteDebug($"Processing: {file}");
+                Outputs.WriteOut($"Processing: {file}");
 
                 try
                 {
@@ -297,7 +297,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             }
 
             string indexJsonString = JsonSerializer.Serialize(modelIndex, ParsingUtils.DefaultJsonSerializerOptions);
-            Outputs.WriteToFile(output, indexJsonString);
+            Outputs.WriteToFile(outputFile, indexJsonString);
             Outputs.WriteOut(indexJsonString);
 
             return ReturnCodes.Success;

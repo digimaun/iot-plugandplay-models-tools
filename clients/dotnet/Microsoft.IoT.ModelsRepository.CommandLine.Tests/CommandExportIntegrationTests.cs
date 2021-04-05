@@ -37,7 +37,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine.Tests
                 ClientInvokator.Invoke($"export --dtmi \"{dtmi}\" {targetRepo}");
 
             Assert.AreEqual(Handlers.ReturnCodes.Success, returnCode);
-            Assert.False(standardError.Contains("Error:"));
+            Assert.False(standardError.Contains(Outputs.DefaultErrorToken));
 
             FileExtractResult extractResult = ParsingUtils.ExtractModels(standardOut);
             List<string> modelsResult = extractResult.Models;
@@ -65,7 +65,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine.Tests
                 ClientInvokator.Invoke($"export --model-file \"{qualifiedModelFilePath}\" --repo \"{TestHelpers.TestLocalModelRepository}\"");
 
             Assert.AreEqual(Handlers.ReturnCodes.Success, returnCode, standardError);
-            Assert.False(standardError.Contains("Error:"));
+            Assert.False(standardError.Contains(Outputs.DefaultErrorToken));
 
             FileExtractResult extractResult = ParsingUtils.ExtractModels(standardOut);
             List<string> modelsResult = extractResult.Models;
@@ -88,7 +88,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine.Tests
                 ClientInvokator.Invoke($"export -o \"{qualifiedPath}\" --dtmi \"{dtmi}\" --repo \"{TestHelpers.TestLocalModelRepository}\"");
 
             Assert.AreEqual(Handlers.ReturnCodes.Success, returnCode);
-            Assert.False(standardError.Contains("Error:"));
+            Assert.False(standardError.Contains(Outputs.DefaultErrorToken));
 
             FileExtractResult extractResult = ParsingUtils.ExtractModels(new FileInfo(qualifiedPath));
             List<string> modelsResult = extractResult.Models;
@@ -121,7 +121,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine.Tests
                 ClientInvokator.Invoke($"export --dtmi \"{dtmi}\" {targetRepo}");
 
             Assert.AreEqual(Handlers.ReturnCodes.ResolutionError, returnCode);
-            Assert.True(standardError.Contains("Error:"));
+            Assert.True(standardError.Contains(Outputs.DefaultErrorToken));
         }
 
         [TestCase("dtmi:com:example:Thermostat;1")]
@@ -131,7 +131,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine.Tests
                 ClientInvokator.Invoke($"export --silent --dtmi \"{dtmi}\" --repo \"{TestHelpers.TestLocalModelRepository}\"");
 
             Assert.AreEqual(Handlers.ReturnCodes.Success, returnCode);
-            Assert.False(standardError.Contains("Error:"));
+            Assert.False(standardError.Contains(Outputs.DefaultErrorToken));
             Assert.AreEqual(string.Empty, standardOut);
         }
 
@@ -142,7 +142,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine.Tests
                 ClientInvokator.Invoke($"export --dtmi \"{dtmi}\" --repo \"{TestHelpers.TestLocalModelRepository}\"");
 
             Assert.AreEqual(Handlers.ReturnCodes.ResolutionError, returnCode);
-            Assert.True(standardError.Contains($"Error: Failure handling \"{dtmi}\"."));
+            Assert.True(standardError.Contains($"{Outputs.DefaultErrorToken} Failure handling \"{dtmi}\"."));
         }
 
         [TestCase("dtmi:com:example:Thermostat;1")]
@@ -153,7 +153,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine.Tests
 
             Assert.AreEqual(Handlers.ReturnCodes.Success, returnCode);
             Assert.AreEqual(string.Empty, standardOut);
-            Assert.False(standardError.Contains("Error:"));
+            Assert.False(standardError.Contains(Outputs.DefaultErrorToken));
             Assert.True(standardError.Contains(Outputs.DebugHeader));
         }
     }

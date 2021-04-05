@@ -61,12 +61,12 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             }
         }
 
-        public static Option<string> Output
+        public static Option<FileInfo> OutputFile
         {
             get
             {
-                return new Option<string>(
-                    aliases: new string[] { "--output", "-o" },
+                return new Option<FileInfo>(
+                    aliases: new string[] { "--output-file", "-o" },
                     description: "Desired file path to write result contents. ",
                     getDefaultValue: () => null
                     );

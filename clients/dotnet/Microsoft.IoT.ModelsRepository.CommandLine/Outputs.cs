@@ -15,12 +15,14 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
         public static readonly string ParserVersion = FileVersionInfo.GetVersionInfo(typeof(ModelParser).Assembly.Location).ProductVersion;
         public static readonly string RepositoryClientVersion = FileVersionInfo.GetVersionInfo(typeof(ModelsRepositoryClient).Assembly.Location).ProductVersion;
         public static readonly string CommandLineVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
-        public static readonly string DebugHeader = $"dmr-client/{CommandLineVersion} parser/{ParserVersion} sdk/{RepositoryClientVersion}";
+        public static readonly string DebugHeader =
+            $"ModelsRepositoryCommandLine/{CommandLineVersion} ModelsRepositoryClient/{RepositoryClientVersion} DTDLParser/{ParserVersion}";
+        public static string DefaultErrorToken = "[Error]:";
 
         public static void WriteError(string msg)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.Error.WriteLine($"Error: {msg}");
+            Console.Error.WriteLine($"{DefaultErrorToken} {msg}");
             Console.ResetColor();
         }
 
@@ -67,6 +69,14 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             {
                 UTF8Encoding utf8WithoutBom = new UTF8Encoding(false);
                 File.WriteAllText(filePath, contents, utf8WithoutBom);
+            }
+        }
+
+        public static void WriteToFile(FileInfo fileInfo, string contents)
+        {
+            if (fileInfo != null)
+            {
+                WriteToFile(fileInfo.FullName, contents);
             }
         }
 

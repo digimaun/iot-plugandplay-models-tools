@@ -24,7 +24,8 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             root.Add(BuildExportCommand());
             root.Add(BuildValidateCommand());
             root.Add(BuildImportModelCommand());
-            root.Add(BuildRepoCommandSet());
+            root.Add(BuildRepoIndexCommand());
+            root.Add(BuildRepoExpandCommand());
 
             root.AddGlobalOption(CommonOptions.Debug);
             root.AddGlobalOption(CommonOptions.Silent);
@@ -68,13 +69,13 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                 CommonOptions.Dtmi,
                 CommonOptions.ModelFile,
                 CommonOptions.Repo,
-                CommonOptions.Output
+                CommonOptions.OutputFile
             };
 
             exportModelCommand.Description =
                 "Exports a model producing the model and its dependency chain in an expanded format. " +
                 "The target repository is used for model resolution.";
-            exportModelCommand.Handler = CommandHandler.Create<string, FileInfo, string, string>(Handlers.Export);
+            exportModelCommand.Handler = CommandHandler.Create<string, FileInfo, string, FileInfo>(Handlers.Export);
 
             return exportModelCommand;
         }
@@ -120,29 +121,19 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
             return importModelCommand;
         }
 
-        private static Command BuildRepoCommandSet()
-        {
-            Command repoCommandRoot = new Command("repo")
-            {
-                Description = "Command group with operations that support managing a models repository.",
-            };
-
-            repoCommandRoot.Add(BuildRepoIndexCommand());
-            repoCommandRoot.Add(BuildRepoExpandCommand());
-
-            return repoCommandRoot;
-        }
-
         private static Command BuildRepoIndexCommand()
         {
+            var outputFileOption = CommonOptions.OutputFile;
+            outputFileOption.IsRequired = true;
+
             Command repoIndexCommand= new Command("index")
             {
                 CommonOptions.LocalRepo,
-                CommonOptions.Output
+                outputFileOption
             };
             repoIndexCommand.Description =
-                "Build an index object from the state of a target local models repository.";
-            repoIndexCommand.Handler = CommandHandler.Create<DirectoryInfo, string>(Handlers.RepoIndex);
+                "Builds a model index file from the state of a target local models repository.";
+            repoIndexCommand.Handler = CommandHandler.Create<DirectoryInfo, FileInfo>(Handlers.RepoIndex);
 
             return repoIndexCommand;
         }
@@ -154,7 +145,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                 CommonOptions.LocalRepo
             };
             repoExpandCommand.Description =
-                "Generate expanded model files for each model in the local repository. " +
+                "For each model in a local repository, generate expanded model files and insert them in-place. " +
                 "The expanded version of a model includes the model with its full model dependency chain.";
 
             repoExpandCommand.Handler = CommandHandler.Create<DirectoryInfo>(Handlers.RepoExpand);
