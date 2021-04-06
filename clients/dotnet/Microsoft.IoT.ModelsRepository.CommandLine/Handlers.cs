@@ -272,6 +272,12 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                 localRepo = new DirectoryInfo(Path.GetFullPath("."));
             }
 
+            if (!localRepo.Exists)
+            {
+                Outputs.WriteError($"Invalid target repository directory: {localRepo.FullName}.");
+                return ReturnCodes.InvalidArguments;
+            }
+
             var modelIndex = new ModelIndex();
 
             foreach (string file in Directory.EnumerateFiles(localRepo.FullName, "*.json",
@@ -312,6 +318,12 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
 
             var repoProvider = new RepoProvider(localRepo.FullName);
 
+            if (!localRepo.Exists)
+            {
+                Outputs.WriteError($"Invalid target repository directory: {localRepo.FullName}.");
+                return ReturnCodes.InvalidArguments;
+            }
+
             foreach (string file in Directory.EnumerateFiles(localRepo.FullName, "*.json",
                 new EnumerationOptions { RecurseSubdirectories = true }))
             {
@@ -320,18 +332,27 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                     continue;
                 }
 
-                var modelFile = new FileInfo(file);
-                string dtmi = ParsingUtils.GetRootId(modelFile);
+                try
+                {
+                    var modelFile = new FileInfo(file);
+                    string dtmi = ParsingUtils.GetRootId(modelFile);
 
-                if (string.IsNullOrEmpty(dtmi)){
-                    continue;
+                    if (string.IsNullOrEmpty(dtmi))
+                    {
+                        continue;
+                    }
+                    List<string> expandedModel = await repoProvider.ExpandModel(dtmi);
+                    string formattedJson = Outputs.FormatExpandedListAsJson(expandedModel);
+
+                    string createPath = DtmiConventions.GetModelUri(dtmi, new Uri(localRepo.FullName), true).AbsolutePath;
+                    Outputs.WriteToFile(createPath, formattedJson);
+                    Outputs.WriteOut($"Created: {createPath}");
                 }
-                List<string> expandedModel = await repoProvider.ExpandModel(dtmi);
-                string formattedJson = Outputs.FormatExpandedListAsJson(expandedModel);
-
-                string createPath = DtmiConventions.GetModelUri(dtmi, new Uri(localRepo.FullName), true).AbsolutePath;
-                Outputs.WriteToFile(createPath, formattedJson);
-                Outputs.WriteOut($"Created: {createPath}");
+                catch(Exception e)
+                {
+                    Outputs.WriteError($"Failure processing model file: {file}, {e.Message}");
+                    return ReturnCodes.ProcessingError;
+                }
             }
 
             return ReturnCodes.Success;

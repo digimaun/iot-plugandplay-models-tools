@@ -21,7 +21,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine.Tests
             }
         }
 
-        [Test]
+        [TestCase]
         public void ExpandModelsRepo()
         {
             TestHelpers.DirectoryCopy(
@@ -64,7 +64,6 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine.Tests
                 $"{Path.Combine(TestHelpers.TestLocalModelRepository, "indexable")}",
                 testExpandableRepo.FullName, true, true);
 
-            testExpandableRepo.Create();
             (int returnCode, string standardOut, string standardError) =
                 ClientInvokator.Invoke($"expand --local-repo {testExpandableRepo.FullName} --silent");
 
@@ -83,6 +82,26 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine.Tests
             Assert.AreEqual(Handlers.ReturnCodes.Success, returnCode);
             Assert.False(standardError.Contains(Outputs.DefaultErrorToken));
             Assert.True(standardError.Contains(Outputs.DebugHeader));
+        }
+
+        [TestCase]
+        public void ExpandModelsRepoWillErrorWithInvalidDirectory()
+        {
+            (int returnCode, string standardOut, string standardError) =
+                ClientInvokator.Invoke($"expand --local-repo ./nonexistent_directory/");
+
+            Assert.AreEqual(Handlers.ReturnCodes.InvalidArguments, returnCode);
+            Assert.True(standardError.Contains(Outputs.DefaultErrorToken));
+            Assert.AreEqual(string.Empty, standardOut);
+        }
+
+        [TestCase]
+        public void ExpandModelsWillErrorsOnInvalidModelJson()
+        {
+            (int returnCode, string _, string standardError) =
+                ClientInvokator.Invoke($"expand");
+            Assert.AreEqual(Handlers.ReturnCodes.ProcessingError, returnCode);
+            Assert.True(standardError.Contains(Outputs.DefaultErrorToken));
         }
     }
 }

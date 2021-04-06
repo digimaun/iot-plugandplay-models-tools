@@ -136,16 +136,5 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine
                 };
             }
         }
-
-        public static Option<ModelDependencyResolution> Deps
-        {
-            get
-            {
-                return new Option<ModelDependencyResolution>(
-                    alias: "--deps",
-                    description: "Indicates how model dependencies should be resolved. ",
-                    getDefaultValue: () => ModelDependencyResolution.Enabled);
-            }
-        }
     }
 }

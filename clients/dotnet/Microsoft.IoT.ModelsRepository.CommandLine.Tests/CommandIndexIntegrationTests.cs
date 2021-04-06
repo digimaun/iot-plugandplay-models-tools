@@ -16,7 +16,7 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine.Tests
             indexableRepoPath = $"{Path.Combine(TestHelpers.TestLocalModelRepository, "indexable")}";
         }
 
-        // TODO: Support page paths.
+        // TODO: Consider paging strategy.
         [TestCase("./dmr-index.json")]
         public void IndexModels(string outfilePath)
         {
@@ -85,12 +85,21 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine.Tests
             Assert.True(string.IsNullOrEmpty(standardOut));
         }
 
-        [Test]
+        [TestCase]
         public void IndexModelsErrorsOnInvalidModelJson()
         {
             (int returnCode, string _, string standardError) =
                 ClientInvokator.Invoke($"index -o willfail.json");
             Assert.AreEqual(Handlers.ReturnCodes.ProcessingError, returnCode);
+            Assert.True(standardError.Contains(Outputs.DefaultErrorToken));
+        }
+
+        [TestCase]
+        public void IndexModelsWillErrorWithInvalidDirectory()
+        {
+            (int returnCode, string _, string standardError) =
+                ClientInvokator.Invoke($"index --local-repo ./nonexistent_directory/");
+            Assert.AreEqual(Handlers.ReturnCodes.InvalidArguments, returnCode);
             Assert.True(standardError.Contains(Outputs.DefaultErrorToken));
         }
     }
