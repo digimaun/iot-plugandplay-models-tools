@@ -15,9 +15,9 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine.Tests
         public static (int, string, string) Invoke(string commandArgs)
         {
             string moniker = GetFrameworkMoniker();
-            ProcessStartInfo cmdsi = new ProcessStartInfo("dotnet")
+            var cmdsi = new ProcessStartInfo("dotnet")
             {
-                Arguments = $"run --no-build --framework {moniker} -- {commandArgs}",
+                Arguments = $"run {GetBuildParam()} --framework {moniker} -- {commandArgs}",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
@@ -46,6 +46,16 @@ namespace Microsoft.IoT.ModelsRepository.CommandLine.Tests
             }
 
             throw new ArgumentException($"Unsupported framework: {lframeworkDesc}.");
+        }
+
+        private static string GetBuildParam()
+        {
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("IOT_MODELSREPOSITORY_PIPELINE_BUILD")))
+            {
+                return "--no-build";
+            }
+
+            return "--no-restore";
         }
     }
 }
